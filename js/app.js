@@ -61,7 +61,8 @@ $(document).ready(function($) {
 
 
     //Simulating click for get popular music onload
-    search("");
+    search("Banks - This Is What Feels Like");
+    $('#query').val("Banks - This Is What Feels Like");
 
     //Append Error To List
     function appendError(error) {
