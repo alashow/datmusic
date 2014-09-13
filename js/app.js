@@ -11,7 +11,6 @@ $(document).ready(function($) {
         sort: 2,
         autoComplete: 1,
         accessToken: "7b8da9a6d2cf68a045cfbbcd93113f74375de40c19e5393809950ef5a3bccb0285eedfc56fcc96c2b3658",
-        clientId: 4548044,
         count: 300
     }
 
@@ -38,24 +37,34 @@ $(document).ready(function($) {
                         array.push(data.results.artistmatches.artist[i].name);
                     }
                     response(array);
-            }
+                }
             });
         },
         minLength: 3
     });
     $('.search').on('click touchstart', function(event) {
-        var query = $('#query').val();
-
+        query = $('#query').val();
         if (query == "") return;
+        search(query);
+    });
 
+
+    //Simulating click for get popular music onload
+    search("");
+
+    function appendError(error) {
+        $('#result > .list-group').append('<li class="list-group-item list-group-item-danger">' + error + '</li>');
+        $('#loading').hide();
+    }
+
+    function search(_query) {
         $.ajax({
             url: vkConfig.url,
             data: {
-                q: query,
+                q: _query,
                 sort: vkConfig.sort,
                 auto_complete: vkConfig.autoComplete,
-                //access_token: vkConfig.accessToken,
-                client_id: vkConfig.clientId,
+                access_token: vkConfig.accessToken,
                 count: vkConfig.count
             },
             type: "GET",
@@ -68,17 +77,41 @@ $(document).ready(function($) {
                 alert('Internet ýok öýdýän...');
             },
             success: function(msg) {
+                if (msg.error) {
+                    if (msg.error.error_code == 5) {
+                        appendError("Access Token ýalňyş");
+                    } else {
+                        appendError("Ýalňyşlyk : " + msg.error.error_msg);
+                    }
+                    return;
+                };
+
                 if (msg.response == 0) {
-                    $('#result > .list-group').append('<li class="list-group-item list-group-item-danger">Beýle aýdym ýok!</li>');
-                    $('#loading').hide();
+                    appendError("Beýle aýdym ýok!");
                     return;
                 };
 
                 for (var i = 1; i < msg.response.length; i++) {
-                    $('#result > .list-group').append('<a class="list-group-item"  target="_blank" href="' + msg.response[i].url + '">' + msg.response[i].artist + ' - ' + msg.response[i].title + '</a>');
+                    $('#result > .list-group').append('<a class="list-group-item"  target="_blank" href="' + msg.response[i].url + '"> <span class="badge">'+msg.response[i].duration.toTime()+'</span>' + msg.response[i].artist + ' - ' + msg.response[i].title + '</a>');
                 };
                 $('#loading').hide();
             }
         });
-    });
+    }
+
+    Number.prototype.toTime = function() {
+        var sec_num = parseInt(this, 10);
+        var hours = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+        var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+        var time = minutes + ':' + seconds;
+        return time;
+    }
 });
