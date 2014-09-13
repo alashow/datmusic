@@ -12,7 +12,7 @@ $(document).ready(function($) {
         url: "https://api.vk.com/method/audio.search",
         sort: 2,
         autoComplete: 1,
-        accessToken: "7b8da9a6d2cf68a045cfbbcd93113f74375de40c19e5393809950ef5a3bccb0285eedfc56fcc96c2b3658",
+        accessToken: "3bced7864f70a9f7735bd1ed96b7c83f0ec1f643b4310504a4ebb9c9eb8fffd405196cdd75ba34a78b8c502e0a8da",
         count: 300
     }
 
