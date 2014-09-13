@@ -1,7 +1,7 @@
-music
+Music
 =====
 
-Search and download free music from Vk. Using Vk Audio Search api and LastFm Artis Search Api for autocomplete.
+Search and Download free music from Vk. Using Vk Audio Search api and LastFm Artist Search Api for autocomplete.
 
 Demo
 
