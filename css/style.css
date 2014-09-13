@@ -49,6 +49,16 @@ a {
     margin-bottom: 0px;
 }
 
+@media (max-width: 768px){
+  .badge {
+    font-size: 7px;
+  }
+}
+
+.input-group {
+  margin-top: 5px;
+}
+
 .spin {
   -webkit-animation: spin .2s infinite linear;
   -moz-animation: spin .2s infinite linear;

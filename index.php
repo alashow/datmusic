@@ -9,7 +9,7 @@ require_once('includes.php');
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>AlashowMusic </title>
 		<link rel="stylesheet" href="<?=URL;?>css/bootstrap.css">
-		 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+		 <link rel="stylesheet" href="css/jquery.ui.css">
 		<link rel="stylesheet" href="<?=URL;?>css/style.css">
 	</head>
 	<body>
