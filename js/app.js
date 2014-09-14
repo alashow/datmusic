@@ -59,8 +59,7 @@ $(document).ready(function($) {
         search(query);
     });
 
-
-    //Simulating click for get popular music onload
+    //Simulating search for demo of searching
     search("Banks - This Is What Feels Like");
     $('#query').val("Banks - This Is What Feels Like");
 
@@ -106,8 +105,16 @@ $(document).ready(function($) {
                 };
 
                 for (var i = 1; i < msg.response.length; i++) {
-                    $('#result > .list-group').append('<a class="list-group-item"  target="_blank" href="' + msg.response[i].url + '"> <span class="badge">' + msg.response[i].duration.toTime() + '</span>' + msg.response[i].artist + ' - ' + msg.response[i].title + '</a>');
+                    $('#result > .list-group').append('<li class="list-group-item"> <span class="badge">' + msg.response[i].duration.toTime() + '</span><span class="badge play"><span class="glyphicon glyphicon-play"></span></span><a  target="_blank" href="' + msg.response[i].url + '">' + msg.response[i].artist + ' - ' + msg.response[i].title + '</a></li>');
                 };
+
+                $('.play').on('click', function(event) {
+                    //Change source of audio, show then play
+                    $('.navbar-audio').attr('src', $(this).parent().find('a').attr('href'));
+                    $('.navbar-audio').show();
+                    var audio = document.getElementById("navbar-audio");
+                    audio.play();
+                });
                 $('#loading').hide();
             }
         });

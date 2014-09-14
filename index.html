@@ -6,7 +6,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>Alashov </title>
 		<link rel="stylesheet" href="css/bootstrap.css">
-		 <link rel="stylesheet" href="css/jquery.ui.css">
+		<link rel="stylesheet" href="css/jquery.ui.css">
 		<link rel="stylesheet" href="css/min.css">
 	</head>
 	<body>
@@ -14,6 +14,8 @@
 			<div class="container">
 				<div class="navbar-header">
 					<a  class="navbar-brand" onclick="window.scrollTo(0, 0);">alashov</a>
+					<audio class="navbar-audio" id="navbar-audio" style="display:none" autoloop loop controls>
+					</audio>
 				</div>
 			</div>
 		</div>
@@ -23,12 +25,12 @@
 					<div class="input-group">
 						<input id="query" type="text" class="form-control" autofocus>
 						<span class="input-group-btn">
-							<button class="btn btn-primary search" type="button"><span class="glyphicon glyphicon-search"></span></button>
+						<button class="btn btn-primary search" type="button"><span class="glyphicon glyphicon-search"></span></button>
 						</span>
 					</div>
 					<div id="result">
-					<h2 id="loading" style="display:none" class="text-center"><span class="glyphicon glyphicon-refresh spin"></span></h2>
-					<br>
+						<h2 id="loading" style="display:none" class="text-center"><span class="glyphicon glyphicon-refresh spin"></span></h2>
+						<br>
 						<div class="list-group"></div>
 					</div>
 				</div>
@@ -40,16 +42,15 @@
 			</div>
 		</div>
 		<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
-		 <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+		<script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 		<script src="js/min.js" type="text/javascript" charset="utf-8"></script>
 		<script>
-			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-			  ga('create', 'UA-54770193-1', 'auto');
-			  ga('send', 'pageview');
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			ga('create', 'UA-54770193-1', 'auto');
+			ga('send', 'pageview');
 		</script>
 	</body>
 </html>

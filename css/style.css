@@ -47,9 +47,16 @@ a {
 	margin-bottom: 0px;
 }
 @media (max-width:768px) {
-	.badge {
-		font-size: 7px;
+	.play {
+		padding: 3px 15px;
 	}
+	.navbar-audio {
+		width: 200px;
+	}
+}
+.navbar-audio {
+	margin-top: 15px;
+	display: list-item;
 }
 .input-group {
 	margin-top: 5px;
@@ -86,4 +93,10 @@ a {
 	to {
 		transform: rotate(360deg);
 	}
+}
+li.list-group-item a {
+	color: #555555;
+}
+li.list-group-item a:hover {
+	color: #18bc9c;
 }
