@@ -87,7 +87,7 @@ $(document).ready(function($) {
                 $('#loading').show();
             },
             error: function() {
-                alert('Internet ýok öýdýän...');
+                appendError('Internet ýok öýdýän...');
             },
             success: function(msg) {
                 if (msg.error) {
@@ -111,7 +111,7 @@ $(document).ready(function($) {
                 $('.play').on('click', function(event) {
                     //Change source of audio, show then play
                     $('.navbar-audio').attr('src', $(this).parent().find('a').attr('href'));
-                    $('.navbar-audio').show();
+                    $('.navbar-audio').attr('style', '');
                     var audio = document.getElementById("navbar-audio");
                     audio.play();
                 });
