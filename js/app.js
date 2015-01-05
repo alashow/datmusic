@@ -1,5 +1,8 @@
+/* ========================================================================
+ * Music v1.0.3
+ * https://github.com/alashow/music
+ * ========================================================================*/
 $(document).ready(function($) {
-
     //Trigger search button when pressing enter button
     $('#query').bind('keypress', function(event) {
         if (event.keyCode == 13) {
@@ -7,13 +10,20 @@ $(document).ready(function($) {
         };
     });
 
-    //Config for vk audio.search api
+    /* ========================================================================
+     * To get your own token you need first create vk application at https://vk.com/editapp?act=create
+     * Then  get your APP_ID and CLIENT_SECRET at application settings
+     * Now open this url from your logined to vk browser, this will redirect to blank.html with your token:
+     * https://oauth.vk.com/authorize?client_id=APP_ID&client_secret=CLIENT_SECRET&scope=audio,offline&response_type=token
+     *======================================================================== */
+
+    // Config for vk audio.search api
     var vkConfig = {
         url: "https://api.vk.com/method/audio.search",
         sort: 2,
         autoComplete: 1,
-        accessToken: "389ffec862d2ad6a1fbf665c0b35c9791288181a674aebfe44ca08b84496cde4e9a35b1124b86e2efdffa",
-        count: 300
+        accessToken: "4d45c6ebef3b05a910071c948bb1374015c9e47ad953fba2f631d8bc1fca425a0a0bffcb4955d3af90c07",
+        count: 500
     }
 
     //Config for LastFm Artist Search Api
@@ -50,40 +60,59 @@ $(document).ready(function($) {
         minLength: 2,
         select: function(event, ui) {
             $('.search').trigger('click'); //trigger search button after select from autocomplete
+            try {
+                    ga('send', 'event', 'autoCompleteSelect', $('#query').val());
+                } catch (e) {}
         }
     });
 
     $('.search').on('click touchstart', function(event) {
         query = $('#query').val();
         if (query == "") return; // return if query empty
-        search(query);
+        search(query, null, null);
     });
 
     //Simulating search for demo of searching
-    search("Banks - This Is What Feels Like");
-    $('#query').val("Banks - This Is What Feels Like");
+    var artists = [
+        "Banks", "Kygo", "Ed Sheeran", "Toe",
+        "Coldplay", "The xx", "MS MR", "Macklemore",
+        "Lorde", "Birdy", "Seinabo Sey", "Sia", "M83",
+        "Hans Zimmer", "Keaton Henson", "Yiruma", "Martin Garrix",
+        "Calvin Harris", "Zinovia", "Avicii", "Iggy Azalea",
+        "Charli XCX", "Sam Smith", "deadmau5", "Yann Tiersen",
+        "Jessie J", " Maroon 5", "X ambassadors", "Fink",
+        "Young Summer", "Lana Del Rey", "Arctic Monkeys"
+    ]
+    var demoArtist = artists[Math.floor(Math.random() * artists.length)];
+    search(demoArtist);
+    $('#query').val(demoArtist);
 
     //Append Error To List
     function appendError(error) {
+        $('#result > .list-group').html("");
         $('#result > .list-group').append('<li class="list-group-item list-group-item-danger">' + error + '</li>');
         $('#loading').hide();
     }
 
     //Main function for search
-    function search(_query) {
+    function search(_query, captcha_sid, captcha_key) {
+        var data = {
+            q: _query,
+            sort: vkConfig.sort,
+            auto_complete: vkConfig.autoComplete,
+            access_token: vkConfig.accessToken,
+            count: vkConfig.count
+        };
+        if (captcha_sid != null && captcha_key != null) {
+            data.captcha_sid = captcha_sid;
+            data.captcha_key = captcha_key;
+        };
         $.ajax({
             url: vkConfig.url,
-            data: {
-                q: _query,
-                sort: vkConfig.sort,
-                auto_complete: vkConfig.autoComplete,
-                access_token: vkConfig.accessToken,
-                count: vkConfig.count
-            },
+            data: data,
             type: "GET",
             dataType: "jsonp",
             beforeSend: function() {
-                $('#result > .list-group').html("");
                 $('#loading').show();
             },
             error: function() {
@@ -96,6 +125,9 @@ $(document).ready(function($) {
                     } else {
                         appendError("Ýalňyşlyk : " + msg.error.error_msg);
                     }
+                    if (msg.error.error_code == 14) {
+                        showCaptcha(msg.error.captcha_sid, msg.error.captcha_img);
+                    };
                     return;
                 };
 
@@ -104,9 +136,13 @@ $(document).ready(function($) {
                     return;
                 };
 
+                $('#result > .list-group').html("");
                 for (var i = 1; i < msg.response.length; i++) {
                     $('#result > .list-group').append('<li class="list-group-item"> <span class="badge">' + msg.response[i].duration.toTime() + '</span><span class="badge play"><span class="glyphicon glyphicon-play"></span></span><a  target="_blank" href="' + msg.response[i].url + '">' + msg.response[i].artist + ' - ' + msg.response[i].title + '</a></li>');
                 };
+                try {
+                    ga('send', 'event', 'search', _query);
+                } catch (e) {}
 
                 $('.play').on('click', function(event) {
                     //Change source of audio, show then play
@@ -135,5 +171,28 @@ $(document).ready(function($) {
         }
         var time = minutes + ':' + seconds;
         return time;
+    }
+
+    function showCaptcha(captchaSid, captchaImage) {
+        try {
+            ga('send', 'event', 'captcha');
+        } catch (e) {}
+        $('#captchaModal').modal("show");
+        $('#captchaImage').attr('src', captchaImage);
+        //refresh captcha onclick
+        $('#captchaImage').on('click', function(event) {
+            $(this).attr('src', captchaImage);
+        });
+
+        $('#captchaSend').on('click', function() {
+            $('#captchaModal').modal("hide");
+            search($('#query').val(), captchaSid, $('#captchaKey').val());
+        });
+
+        $('#captchaKey').bind('keypress', function(event) {
+            if (event.keyCode == 13) {
+                $('#captchaSend').trigger('click');
+            };
+        });
     }
 });
