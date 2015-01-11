@@ -1,7 +1,7 @@
 /* ========================================================================
- * Music v1.0.3
+ * Music v1.1.0
  * https://github.com/alashow/music
- * ========================================================================*/
+ * ======================================================================== */
 $(document).ready(function($) {
     //Trigger search button when pressing enter button
     $('#query').bind('keypress', function(event) {
@@ -15,7 +15,7 @@ $(document).ready(function($) {
      * Then  get your APP_ID and CLIENT_SECRET at application settings
      * Now open this url from your logined to vk browser, this will redirect to blank.html with your token:
      * https://oauth.vk.com/authorize?client_id=APP_ID&client_secret=CLIENT_SECRET&scope=audio,offline&response_type=token
-     *======================================================================== */
+     * ======================================================================== */
 
     // Config for vk audio.search api
     var vkConfig = {
@@ -23,7 +23,7 @@ $(document).ready(function($) {
         sort: 2,
         autoComplete: 1,
         accessToken: "4d45c6ebef3b05a910071c948bb1374015c9e47ad953fba2f631d8bc1fca425a0a0bffcb4955d3af90c07",
-        count: 500
+        count: 1000 // 1000 is limit of vk api
     }
 
     //Config for LastFm Artist Search Api
@@ -46,7 +46,7 @@ $(document).ready(function($) {
                 artist: request.term
             }, function(data) {
                 var array = [];
-                //If Artist not empty
+                //If artists not empty
                 if (data.results.artistmatches.artist != undefined) {
                     //Adding to array artist names
                     for (var i = 0; i < data.results.artistmatches.artist.length; i++) {
@@ -60,16 +60,17 @@ $(document).ready(function($) {
         minLength: 2,
         select: function(event, ui) {
             $('.search').trigger('click'); //trigger search button after select from autocomplete
+            //Tracking autocomplete
             try {
-                    ga('send', 'event', 'autoCompleteSelect', $('#query').val());
-                } catch (e) {}
+                ga('send', 'event', 'autoCompleteSelect', $('#query').val());
+            } catch (e) {}
         }
     });
 
     $('.search').on('click touchstart', function(event) {
         query = $('#query').val();
         if (query == "") return; // return if query empty
-        search(query, null, null);
+        search(query, null, null, true);
     });
 
     //Simulating search for demo of searching
@@ -84,7 +85,7 @@ $(document).ready(function($) {
         "Young Summer", "Lana Del Rey", "Arctic Monkeys"
     ]
     var demoArtist = artists[Math.floor(Math.random() * artists.length)];
-    search(demoArtist);
+    search(demoArtist, null, null, false);
     $('#query').val(demoArtist);
 
     //Append Error To List
@@ -95,7 +96,7 @@ $(document).ready(function($) {
     }
 
     //Main function for search
-    function search(_query, captcha_sid, captcha_key) {
+    function search(_query, captcha_sid, captcha_key, analytics) {
         var data = {
             q: _query,
             sort: vkConfig.sort,
@@ -110,39 +111,43 @@ $(document).ready(function($) {
         $.ajax({
             url: vkConfig.url,
             data: data,
-            type: "GET",
+            type: "POST",
             dataType: "jsonp",
             beforeSend: function() {
-                $('#loading').show();
+                $('#loading').show(); // Showing loading
             },
             error: function() {
-                appendError('Internet ýok öýdýän...');
+                appendError('Internet ýok öýdýän...'); //Network error, ajax failed
             },
             success: function(msg) {
                 if (msg.error) {
                     if (msg.error.error_code == 5) {
-                        appendError("Access Token ýalňyş");
+                        appendError("Access Token ýalňyş"); //Access token error
                     } else {
-                        appendError("Ýalňyşlyk : " + msg.error.error_msg);
+                        appendError("Ýalňyşlyk : " + msg.error.error_msg); //Showing returned error
                     }
                     if (msg.error.error_code == 14) {
-                        showCaptcha(msg.error.captcha_sid, msg.error.captcha_img);
+                        showCaptcha(msg.error.captcha_sid, msg.error.captcha_img); // api required captcha, showing it
                     };
                     return;
                 };
 
                 if (msg.response == 0) {
-                    appendError("Beýle aýdym ýok!");
+                    appendError("Beýle aýdym ýok!"); //Response empty, audios not found 
                     return;
                 };
 
-                $('#result > .list-group').html("");
+                $('#result > .list-group').html(""); //clear list
+                //appending new items to list
                 for (var i = 1; i < msg.response.length; i++) {
-                    $('#result > .list-group').append('<li class="list-group-item"> <span class="badge">' + msg.response[i].duration.toTime() + '</span><span class="badge play"><span class="glyphicon glyphicon-play"></span></span><a  target="_blank" href="' + msg.response[i].url + '">' + msg.response[i].artist + ' - ' + msg.response[i].title + '</a></li>');
+                    $('#result > .list-group').append('<li class="list-group-item"><span class="badge">' + msg.response[i].duration.toTime() + '</span><span class="badge play"><span class="glyphicon glyphicon-play"></span></span><a  title="" target="_blank" href="download.php?audio_id=' + msg.response[i].owner_id + '_' + msg.response[i].aid + '">' + msg.response[i].artist + ' - ' + msg.response[i].title + '</a></li>');
                 };
-                try {
-                    ga('send', 'event', 'search', _query);
-                } catch (e) {}
+                //tracking search query
+                if (analytics) {
+                    try {
+                        ga('send', 'event', 'search', _query);
+                    } catch (e) {}
+                };
 
                 $('.play').on('click', function(event) {
                     //Change source of audio, show then play
@@ -173,7 +178,9 @@ $(document).ready(function($) {
         return time;
     }
 
+    //Showing captcha with given captcha id and image
     function showCaptcha(captchaSid, captchaImage) {
+       //Tracking captchas
         try {
             ga('send', 'event', 'captcha');
         } catch (e) {}
@@ -184,11 +191,13 @@ $(document).ready(function($) {
             $(this).attr('src', captchaImage);
         });
 
+        //Searching with old query and captcha
         $('#captchaSend').on('click', function() {
             $('#captchaModal').modal("hide");
-            search($('#query').val(), captchaSid, $('#captchaKey').val());
+            search($('#query').val(), captchaSid, $('#captchaKey').val(), true);
         });
 
+       //trigger send click after pressing enter button
         $('#captchaKey').bind('keypress', function(event) {
             if (event.keyCode == 13) {
                 $('#captchaSend').trigger('click');
