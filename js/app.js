@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.1.0
+ * Music v1.1.1
  * https://github.com/alashow/music
  * ======================================================================== */
 $(document).ready(function($) {
@@ -9,33 +9,29 @@ $(document).ready(function($) {
             $('.search').trigger('click');
         };
     });
-
     /* ========================================================================
      * To get your own token you need first create vk application at https://vk.com/editapp?act=create
      * Then  get your APP_ID and CLIENT_SECRET at application settings
      * Now open this url from your logined to vk browser, this will redirect to blank.html with your token:
      * https://oauth.vk.com/authorize?client_id=APP_ID&client_secret=CLIENT_SECRET&scope=audio,offline&response_type=token
      * ======================================================================== */
-
     // Config for vk audio.search api
     var vkConfig = {
-        url: "https://api.vk.com/method/audio.search",
-        sort: 2,
-        autoComplete: 1,
-        accessToken: "4d45c6ebef3b05a910071c948bb1374015c9e47ad953fba2f631d8bc1fca425a0a0bffcb4955d3af90c07",
-        count: 1000 // 1000 is limit of vk api
-    }
-
-    //Config for LastFm Artist Search Api
+            url: "https://api.vk.com/method/audio.search",
+            sort: 2,
+            autoComplete: 1,
+            accessToken: "4d45c6ebef3b05a910071c948bb1374015c9e47ad953fba2f631d8bc1fca425a0a0bffcb4955d3af90c07",
+            count: 1000 // 1000 is limit of vk api
+        }
+        //Config for LastFm Artist Search Api
     var lastFmConfig = {
-        url: "http://ws.audioscrobbler.com/2.0/",
-        method: "artist.search",
-        apiKey: "8b7af513f19366e766af02c85879b0ac",
-        format: "json",
-        limit: 10
-    }
-
-    //Autocomplete for search input
+            url: "http://ws.audioscrobbler.com/2.0/",
+            method: "artist.search",
+            apiKey: "8b7af513f19366e766af02c85879b0ac",
+            format: "json",
+            limit: 10
+        }
+        //Autocomplete for search input
     $("#query").autocomplete({
         source: function(request, response) {
             $.get(lastFmConfig.url, {
@@ -66,27 +62,34 @@ $(document).ready(function($) {
             } catch (e) {}
         }
     });
-
     $('.search').on('click touchstart', function(event) {
         query = $('#query').val();
         if (query == "") return; // return if query empty
         search(query, null, null, true);
     });
 
-    //Simulating search for demo of searching
-    var artists = [
-        "Banks", "Kygo", "Ed Sheeran", "Toe",
-        "Coldplay", "The xx", "MS MR", "Macklemore",
-        "Lorde", "Birdy", "Seinabo Sey", "Sia", "M83",
-        "Hans Zimmer", "Keaton Henson", "Yiruma", "Martin Garrix",
-        "Calvin Harris", "Zinovia", "Avicii", "Iggy Azalea",
-        "Charli XCX", "Sam Smith", "deadmau5", "Yann Tiersen",
-        "Jessie J", " Maroon 5", "X ambassadors", "Fink",
-        "Young Summer", "Lana Del Rey", "Arctic Monkeys"
-    ]
-    var demoArtist = artists[Math.floor(Math.random() * artists.length)];
-    search(demoArtist, null, null, false);
-    $('#query').val(demoArtist);
+    var hash = window.location.hash;
+    //For sharing search links, like http://alashov.com/music/#The xx - Together
+    if (hash.length > 1) {
+        hash = hash.substring(1, hash.length); //remove hash from query
+        search(hash, null, null, true);
+        $('#query').val(hash);
+    } else {
+        //Simulating search for demo of searching
+        var artists = [
+            "Banks", "Kygo", "Ed Sheeran", "Toe",
+            "Coldplay", "The xx", "MS MR", "Macklemore",
+            "Lorde", "Birdy", "Seinabo Sey", "Sia", "M83",
+            "Hans Zimmer", "Keaton Henson", "Yiruma", "Martin Garrix",
+            "Calvin Harris", "Zinovia", "Avicii", "Iggy Azalea",
+            "Charli XCX", "Sam Smith", "deadmau5", "Yann Tiersen",
+            "Jessie J", " Maroon 5", "X ambassadors", "Fink",
+            "Young Summer", "Lana Del Rey", "Arctic Monkeys"
+        ]
+        var demoArtist = artists[Math.floor(Math.random() * artists.length)];
+        search(demoArtist, null, null, false);
+        $('#query').val(demoArtist);
+    }
 
     //Append Error To List
     function appendError(error) {
@@ -94,9 +97,9 @@ $(document).ready(function($) {
         $('#result > .list-group').append('<li class="list-group-item list-group-item-danger">' + error + '</li>');
         $('#loading').hide();
     }
-
     //Main function for search
     function search(_query, captcha_sid, captcha_key, analytics) {
+        window.location.hash = _query;
         var data = {
             q: _query,
             sort: vkConfig.sort,
@@ -131,12 +134,10 @@ $(document).ready(function($) {
                     };
                     return;
                 };
-
                 if (msg.response == 0) {
                     appendError("Beýle aýdym ýok!"); //Response empty, audios not found 
                     return;
                 };
-
                 $('#result > .list-group').html(""); //clear list
                 //appending new items to list
                 for (var i = 1; i < msg.response.length; i++) {
@@ -148,7 +149,6 @@ $(document).ready(function($) {
                         ga('send', 'event', 'search', _query);
                     } catch (e) {}
                 };
-
                 $('.play').on('click', function(event) {
                     //Change source of audio, show then play
                     $('.navbar-audio').attr('src', $(this).parent().find('a').attr('href'));
@@ -160,14 +160,12 @@ $(document).ready(function($) {
             }
         });
     }
-
     //Sec To Time
     Number.prototype.toTime = function() {
         var sec_num = parseInt(this, 10);
         var hours = Math.floor(sec_num / 3600);
         var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
         var seconds = sec_num - (hours * 3600) - (minutes * 60);
-
         if (minutes < 10) {
             minutes = "0" + minutes;
         }
@@ -177,10 +175,9 @@ $(document).ready(function($) {
         var time = minutes + ':' + seconds;
         return time;
     }
-
     //Showing captcha with given captcha id and image
     function showCaptcha(captchaSid, captchaImage) {
-       //Tracking captchas
+        //Tracking captchas
         try {
             ga('send', 'event', 'captcha');
         } catch (e) {}
@@ -190,14 +187,12 @@ $(document).ready(function($) {
         $('#captchaImage').on('click', function(event) {
             $(this).attr('src', captchaImage);
         });
-
         //Searching with old query and captcha
         $('#captchaSend').on('click', function() {
             $('#captchaModal').modal("hide");
             search($('#query').val(), captchaSid, $('#captchaKey').val(), true);
         });
-
-       //trigger send click after pressing enter button
+        //trigger send click after pressing enter button
         $('#captchaKey').bind('keypress', function(event) {
             if (event.keyCode == 13) {
                 $('#captchaSend').trigger('click');
