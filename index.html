@@ -4,28 +4,45 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>Alashov </title>
+		<title>Alashov Music</title>
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.1/flatly/bootstrap.min.css">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="css/jquery.ui.css">
-		<link rel="stylesheet" href="css/min.css?v=1.0.3">
+		<link rel="stylesheet" href="css/min.css?v=1.1.3">
 	</head>
 	<body>
 		<div class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
 					<a  class="navbar-brand" onclick="window.scrollTo(0, 0);">alashov</a>
-					<audio class="navbar-audio" id="navbar-audio" style="display:none" autoloop loop controls>
-					</audio>
 				</div>
 			</div>
 		</div>
 		<div class="wrapper">
 			<div class="container">
 				<div class="col-xs-12">
+					<div id="jquery_jplayer_1" class="jp-jplayer"></div>
+					<div id="jp_container_1" class="jp-audio" style="display: none;" data-toggle="tooltip" data-placement="bottom" title="Üstüne basyp saradyp hem bolýar">
+						<div class="jp-controls">
+							<a class="jp-play"><i class="fa fa-play"></i></a>
+							<a class="jp-pause"><i class="fa fa-pause"></i></a>
+						</div>
+						<div class="jp-progress">
+							<div class="jp-seek-bar">
+								<div class="jp-play-bar">
+								</div>
+							</div>
+							<div class="jp-current-time"></div>
+						</div>
+						<div class="jp-no-solution">
+							Media Player Error<br>
+							Update your browser or Flash plugin
+						</div>
+					</div>
 					<div class="input-group"  style="z-index: 5">
 						<input id="query" type="text" class="form-control" autofocus>
 						<span class="input-group-btn">
-						<button class="btn btn-primary search" type="button"><span class="glyphicon glyphicon-search"></span></button>
+							<button class="btn btn-primary search" type="button"><span class="glyphicon glyphicon-search"></span></button>
 						</span>
 					</div>
 					<div id="result">
@@ -44,13 +61,14 @@
 		</div>
 		<div id="footer">
 			<div class="container">
-				<p class="muted credit text-center">Made with love by  <a href="https://github.com/alashow/music" target="_blank">Alashov</a></p>
+				<p class="muted credit text-center">With ♥ by <a href="https://github.com/alashow/music" target="_blank">Alashov</a></p>
 			</div>
 		</div>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-		<script src="js/min.js?v=1.1.1" type="text/javascript" charset="utf-8"></script>
+		<script src="http://cdn.jsdelivr.net/jplayer/2.9.2/jquery.jplayer.min.js"></script>
+		<script src="js/min.js?v=1.1.3" type="text/javascript" charset="utf-8"></script>
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.1.1
+ * Music v1.1.3
  * https://github.com/alashow/music
  * ======================================================================== */
 $(document).ready(function($) {
@@ -9,6 +9,20 @@ $(document).ready(function($) {
             $('.search').trigger('click');
         };
     });
+    // Initialize player
+    $("#jquery_jplayer_1").jPlayer({
+        swfPath: "http://alashov.com/music/js",
+        supplied: "mp3",
+        wmode: "window",
+        smoothPlayBar: true,
+        keyEnabled: true,
+        remainingDuration: true,
+        toggleDuration: true,
+        volume: 1
+    });
+
+    $('[data-toggle="tooltip"]').tooltip()
+
     /* ========================================================================
      * To get your own token you need first create vk application at https://vk.com/editapp?act=create
      * Then  get your APP_ID and CLIENT_SECRET at application settings
@@ -68,12 +82,11 @@ $(document).ready(function($) {
         search(query, null, null, true);
     });
 
-    var hash = window.location.hash;
-    //For sharing search links, like http://alashov.com/music/#The xx - Together
-    if (hash.length > 1) {
-        hash = hash.substring(1, hash.length); //remove hash from query
-        search(hash, null, null, true);
-        $('#query').val(hash);
+    var query = getParameterByName("q");;
+    //For sharing search links, like http://alashov.com/music/?=qThe xx - Together
+    if (query.length > 1) {
+        search(query, null, null, true);
+        $('#query').val(query);
     } else {
         //Simulating search for demo of searching
         var artists = [
@@ -87,7 +100,8 @@ $(document).ready(function($) {
             "Young Summer", "Lana Del Rey", "Arctic Monkeys"
         ]
         var demoArtist = artists[Math.floor(Math.random() * artists.length)];
-        search(demoArtist, null, null, false);
+        search(demoArtist, null, null, false, true);
+        window.history.pushState("wtf", $('title').html(), "?q=" + demoArtist);
         $('#query').val(demoArtist);
     }
 
@@ -98,8 +112,10 @@ $(document).ready(function($) {
         $('#loading').hide();
     }
     //Main function for search
-    function search(_query, captcha_sid, captcha_key, analytics) {
-        window.location.hash = _query;
+    function search(_query, captcha_sid, captcha_key, analytics, performer_only) {
+        if (query.length > 1) {
+            window.history.pushState("wtf", $('title').html(), "?q=" + query);
+        };
         var data = {
             q: _query,
             sort: vkConfig.sort,
@@ -111,13 +127,17 @@ $(document).ready(function($) {
             data.captcha_sid = captcha_sid;
             data.captcha_key = captcha_key;
         };
+        //search only by artist name
+        if (performer_only) {
+            data.performer_only = 1;
+        };
         $.ajax({
             url: vkConfig.url,
             data: data,
             type: "POST",
             dataType: "jsonp",
             beforeSend: function() {
-                $('#loading').show(); // Showing loading
+                $('#loading').show(); // Show loading
             },
             error: function() {
                 appendError('Internet ýok öýdýän...'); //Network error, ajax failed
@@ -141,8 +161,9 @@ $(document).ready(function($) {
                 $('#result > .list-group').html(""); //clear list
                 //appending new items to list
                 for (var i = 1; i < msg.response.length; i++) {
-                    $('#result > .list-group').append('<li class="list-group-item"><span class="badge">' + msg.response[i].duration.toTime() + '</span><span class="badge play"><span class="glyphicon glyphicon-play"></span></span><a  title="" target="_blank" href="download.php?audio_id=' + msg.response[i].owner_id + '_' + msg.response[i].aid + '">' + msg.response[i].artist + ' - ' + msg.response[i].title + '</a></li>');
+                    $('#result > .list-group').append('<li class="list-group-item"><span class="badge">' + msg.response[i].duration.toTime() + '</span><span class="badge play" title="Diňlemek üçin basyň!"><span class="glyphicon glyphicon-play"></span></span><a title="Kompýutere ýüklemek üçin basyň!" target="_blank" data-src="' + msg.response[i].url + '" href="download.php?audio_id=' + msg.response[i].owner_id + '_' + msg.response[i].aid + '">' + msg.response[i].artist + ' - ' + msg.response[i].title + '</a></li>');
                 };
+
                 //tracking search query
                 if (analytics) {
                     try {
@@ -150,16 +171,19 @@ $(document).ready(function($) {
                     } catch (e) {}
                 };
                 $('.play').on('click', function(event) {
-                    //Change source of audio, show then play
-                    $('.navbar-audio').attr('src', $(this).parent().find('a').attr('href'));
-                    $('.navbar-audio').attr('style', '');
-                    var audio = document.getElementById("navbar-audio");
-                    audio.play();
+                    //Change source of audio, play then show
+                    $("#jquery_jplayer_1").jPlayer("setMedia", {
+                        mp3: $(this).parent().find('a').attr('data-src')
+                    });
+                    $("#jquery_jplayer_1").jPlayer("play");
+                    $('#jp_container_1').show();
+                    window.scrollTo(0, 0);
                 });
                 $('#loading').hide();
             }
         });
     }
+
     //Sec To Time
     Number.prototype.toTime = function() {
         var sec_num = parseInt(this, 10);
@@ -198,5 +222,12 @@ $(document).ready(function($) {
                 $('#captchaSend').trigger('click');
             };
         });
+    }
+
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 });
