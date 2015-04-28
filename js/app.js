@@ -83,7 +83,7 @@ $(document).ready(function($) {
     });
 
     var query = getParameterByName("q");;
-    //For sharing search links, like http://alashov.com/music/?=qThe xx - Together
+    //For sharing search links, like http://alashov.com/music/?q=The xx - Together
     if (query.length > 1) {
         search(query, null, null, true);
         $('#query').val(query);
