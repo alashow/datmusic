@@ -34,8 +34,8 @@ $(document).ready(function($) {
             url: "https://api.vk.com/method/audio.search",
             sort: 2,
             autoComplete: 1,
-            accessToken: "4d45c6ebef3b05a910071c948bb1374015c9e47ad953fba2f631d8bc1fca425a0a0bffcb4955d3af90c07",
-            count: 1000 // 1000 is limit of vk api
+            accessToken: "3e2f0b5c127bc8bccc5e4b20eeb55117c0c09079c9e6a4788735f9c9615ccf628cc7f1919bf0acb329c2b",
+            count: 300 // 300 is limit of vk api
         }
         //Config for LastFm Artist Search Api
     var lastFmConfig = {
