@@ -46,7 +46,7 @@ $(document).ready(function($) {
         url: "https://api.vk.com/method/audio.search",
         sort: 2,
         autoComplete: 1,
-        accessToken: "3e2f0b5c127bc8bccc5e4b20eeb55117c0c09079c9e6a4788735f9c9615ccf628cc7f1919bf0acb329c2b",
+        accessToken: "e9dbafe947e48136f15bbaf1184095282f53bb146441910421e180b46fa6cf6cf8c37f7de3f525d2c121d",
         count: 300 // 300 is limit of vk api
     }
 
