@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.1.3
+ * Music v1.1.4
  * https://github.com/alashow/music
  * ======================================================================== */
 $(document).ready(function($) {
@@ -9,6 +9,7 @@ $(document).ready(function($) {
             $('.search').trigger('click');
         };
     });
+
     // Initialize player
     $("#jquery_jplayer_1").jPlayer({
         swfPath: "http://alashov.com/music/js",
@@ -21,7 +22,18 @@ $(document).ready(function($) {
         volume: 1
     });
 
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
+
+    //Download apk if android
+    var ua = navigator.userAgent.toLowerCase();
+    var isAndroid = ua.indexOf("android") > -1;
+    if (isAndroid) {
+        var r = confirm("Android App indir?");
+        if (r == true) {
+            var win = window.open("http://bitly.com/M-APK", '_blank');
+            win.focus();
+        }
+    }
 
     /* ========================================================================
      * To get your own token you need first create vk application at https://vk.com/editapp?act=create
@@ -31,13 +43,19 @@ $(document).ready(function($) {
      * ======================================================================== */
     // Config for vk audio.search api
     var vkConfig = {
-            url: "https://api.vk.com/method/audio.search",
-            sort: 2,
-            autoComplete: 1,
-            accessToken: "3e2f0b5c127bc8bccc5e4b20eeb55117c0c09079c9e6a4788735f9c9615ccf628cc7f1919bf0acb329c2b",
-            count: 300 // 300 is limit of vk api
-        }
-        //Config for LastFm Artist Search Api
+        url: "https://api.vk.com/method/audio.search",
+        sort: 2,
+        autoComplete: 1,
+        accessToken: "3e2f0b5c127bc8bccc5e4b20eeb55117c0c09079c9e6a4788735f9c9615ccf628cc7f1919bf0acb329c2b",
+        count: 300 // 300 is limit of vk api
+    }
+
+
+    /* ========================================================================
+     * Disabled
+     * ========================================================================
+
+    //Config for LastFm Artist Search Api
     var lastFmConfig = {
             url: "http://ws.audioscrobbler.com/2.0/",
             method: "artist.search",
@@ -46,36 +64,37 @@ $(document).ready(function($) {
             limit: 10
         }
         //Autocomplete for search input
-    $("#query").autocomplete({
-        source: function(request, response) {
-            $.get(lastFmConfig.url, {
-                method: lastFmConfig.method,
-                api_key: lastFmConfig.apiKey,
-                format: lastFmConfig.format,
-                limit: lastFmConfig.limit,
-                artist: request.term
-            }, function(data) {
-                var array = [];
-                //If artists not empty
-                if (data.results.artistmatches.artist != undefined) {
-                    //Adding to array artist names
-                    for (var i = 0; i < data.results.artistmatches.artist.length; i++) {
-                        array.push(data.results.artistmatches.artist[i].name);
+        $("#query").autocomplete({
+            source: function(request, response) {
+                $.get(lastFmConfig.url, {
+                    method: lastFmConfig.method,
+                    api_key: lastFmConfig.apiKey,
+                    format: lastFmConfig.format,
+                    limit: lastFmConfig.limit,
+                    artist: request.term
+                }, function(data) {
+                    var array = [];
+                    //If artists not empty
+                    if (data.results.artistmatches.artist != undefined) {
+                        //Adding to array artist names
+                        for (var i = 0; i < data.results.artistmatches.artist.length; i++) {
+                            array.push(data.results.artistmatches.artist[i].name);
+                        }
+                        //Showing autocomplete
+                        response(array);
                     }
-                    //Showing autocomplete
-                    response(array);
-                }
-            });
-        },
-        minLength: 2,
-        select: function(event, ui) {
-            $('.search').trigger('click'); //trigger search button after select from autocomplete
-            //Tracking autocomplete
-            try {
-                ga('send', 'event', 'autoCompleteSelect', $('#query').val());
-            } catch (e) {}
-        }
-    });
+                });
+            },
+            minLength: 2,
+            select: function(event, ui) {
+                $('.search').trigger('click'); //trigger search button after select from autocomplete
+                //Tracking autocomplete
+                try {
+                    ga('send', 'event', 'autoCompleteSelect', $('#query').val());
+                } catch (e) {}
+            }
+        });*/
+
     $('.search').on('click touchstart', function(event) {
         query = $('#query').val();
         if (query == "") return; // return if query empty

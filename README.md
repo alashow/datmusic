@@ -8,6 +8,9 @@ Demo
 [alashov.com/music](http://alashov.com/music)
 ![Demo Screenshot](http://i.imgur.com/VRUmLW8.jpg)
 
+## Android Version repo
+[Android Version repo](https://github.com/alashow/music-android)
+
 ## License
 
                 DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
