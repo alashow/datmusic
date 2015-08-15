@@ -3,7 +3,7 @@ ignore_user_abort(true);
 set_time_limit(0);
 
 $audioId = $_GET["audio_id"];
-$token = "e9dbafe947e48136f15bbaf1184095282f53bb146441910421e180b46fa6cf6cf8c37f7de3f525d2c121d"; //get your own if not working
+$token = "e9dbafe947e48136f15bbaf1184095282f53bb146441910421e180b46fa6cf6cf8c37f7de3f525d2c121d"; //get your own if don't works
 
 if (!isset($_GET["audio_id"]) && isset($_GET['id'])) {
   $audioId = split(":", $_GET['id']);

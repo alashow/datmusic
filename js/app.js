@@ -112,14 +112,18 @@ $(document).ready(function($) {
     } else {
         //Simulating search for demo of searching
         var artists = [
-            "Banks", "Kygo", "Ed Sheeran", "Toe",
+            "Kygo", "Ed Sheeran", "Toe",
             "Coldplay", "The xx", "MS MR", "Macklemore",
             "Lorde", "Birdy", "Seinabo Sey", "Sia", "M83",
             "Hans Zimmer", "Keaton Henson", "Yiruma", "Martin Garrix",
-            "Calvin Harris", "Zinovia", "Avicii", "Iggy Azalea",
-            "Charli XCX", "Sam Smith", "deadmau5", "Yann Tiersen",
+            "Calvin Harris", "Zinovia", "Avicii", "Of Monsters and Men",
+            "Josef Salvat", "Sam Smith", "deadmau5", "Yann Tiersen",
             "Jessie J", " Maroon 5", "X ambassadors", "Fink",
-            "Young Summer", "Lana Del Rey", "Arctic Monkeys"
+            "Young Summer", "Lana Del Rey", "Arctic Monkeys",
+            "Ludovico Einaudi", "Lera Lynn", "Bastille",
+            "Nils Frahm", "Ben Howard", "Andrew Belle",
+            "Mumford & Sons", "Ryan Keen", "Zes", "Greg Haines",
+            "Max Richter"
         ]
         var demoArtist = artists[Math.floor(Math.random() * artists.length)];
         search(demoArtist, null, null, false, true);
