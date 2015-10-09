@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.2.0
+ * Music v1.2.1
  * https://github.com/alashow/music
  * ======================================================================== */
 $(document).ready(function($) {
@@ -256,9 +256,14 @@ $(document).ready(function($) {
                     audioDuration = msg.response[i].duration.toTime();
 
                     $('#result > .list-group')
-                        .append('<li class="list-group-item"><span class="badge">' + audioDuration + '</span><span class="badge play" data-i18n="[title]clickToPlay"><span class="glyphicon glyphicon-play"></span></span><a data-i18n="[title]clickToDownload" target="_blank" data-src="' + msg.response[i].url + '" href="' + downloadUrl + '">' + audioTitle + '</a></li>');
+                        .append('<li class="list-group-item"><span class="badge">' + audioDuration + '</span><span class="badge play" data-i18n="[title]clickToPlay"><span class="glyphicon glyphicon-play"></span></span><a class="iframe-download" data-i18n="[title]clickToDownload" target="_blank" data-src="' + msg.response[i].url + '" href="' + downloadUrl + '">' + audioTitle + '</a></li>');
                 };
                 $(".list-group").i18n();
+                $('.iframe-download').on('click', function(event) {
+                    event.preventDefault();
+                    url = $(this).attr('href');
+                    $("<iframe/>").attr({src: url, style: "visibility:hidden;display:none"}).appendTo($('body'));
+                });
 
                 //tracking search query
                 if (analytics) {

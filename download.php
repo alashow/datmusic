@@ -43,7 +43,6 @@ $filePath = "dl/" . md5($audioId); //caching mp3s, md5 for unique audioIds
 
 if (file_exists($filePath)) {
   forceDownload($filePath, $fileName);
-  echo "hey shit";
   return;
 } else {
   if (downloadFile($audioUrl, $filePath)) {
