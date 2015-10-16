@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.2.1
+ * Music v1.2.4
  * https://github.com/alashow/music
  * ======================================================================== */
 $(document).ready(function($) {
@@ -14,22 +14,22 @@ $(document).ready(function($) {
     var vkConfig = {
         url: "https://api.vk.com/method/audio.search",
         autoComplete: 1,
-        accessToken: "e9dbafe947e48136f15bbaf1184095282f53bb146441910421e180b46fa6cf6cf8c37f7de3f525d2c121d",
+        accessToken: "fff9ef502df4bb10d9bf50dcd62170a24c69e98e4d847d9798d63dacf474b674f9a512b2b3f7e8ebf1d69",
         count: 300 // 300 is limit of vk api
     };
 
     var config = {
-        appPath: "http://alashov.com/music/",
+        appUrl: "http://datmusic.xyz/",
+        downloadServerUrl: "http://datmusic.xyz/", //change if download.php file located elsewhere
+        proxyMode: true, //when proxyMode enabled, search will performed through server (search.php), advantages of proxyMode are: private accessToken, less captchas. Disadvantages: preview of audio will be slower
+        prettyDownloadUrlMode: true, //converts http://datmusic.xyz/download.php?audio_id=16051160_137323200 to http://datmusic.xyz/JjGBD:AEnvc, see readme for rewriting regex
         performerOnly: false,
-        liveSearch: false,
         sort: 2,
-        prettyDownloadUrlMode: false, //converts http://alashov.com/music/download.php?audio_id=16051160_137323200 to http://alashov.com/music/JjGBD:AEnvc, see readme for rewriting regex
         oldQuery: null,
         defaultLang: "en",
         langCookie: "musicLang",
         sortCookie: "musicSort",
-        performerOnlyCookie: "musicPerformerOnly",
-        liveSearchCookie: "musicLiveSearch"
+        performerOnlyCookie: "musicPerformerOnly"
     };
 
     i18n.init({
@@ -71,11 +71,6 @@ $(document).ready(function($) {
         config.performerOnly = $.cookie(config.performerOnlyCookie);
     }
 
-    if ($.cookie(config.liveSearchCookie) == "true") {
-        $('#liveSearchCheck').prop("checked", $.cookie(config.liveSearchCookie));
-        config.liveSearch = $.cookie(config.liveSearchCookie);
-    }
-
     //change language live
     $('#languageSelect').on('change', function(event) {
         i18n.setLng($(this).val(), function(err, t) {
@@ -103,12 +98,6 @@ $(document).ready(function($) {
         };
     });
 
-    $('#liveSearchCheck').change(function() {
-        isChecked = $(this).is(':checked');
-        config.liveSearch = isChecked;
-        $.cookie(config.liveSearchCookie, isChecked);
-    });
-
     //Trigger search button when pressing enter button
     $('#query').bind('keypress', function(event) {
         if (event.keyCode == 13) {
@@ -116,13 +105,7 @@ $(document).ready(function($) {
         };
     });
 
-    $('#query').on('keypress', function(event) {
-        if (config.liveSearch) {
-            $('.search').trigger('click');
-        };
-    });
-
-    $('.search').on('click touchstart', function(event) {
+    $('.search').on('click', function(event) {
         typedQuery = $('#query').val();
         if (typedQuery == "") return; // return if query empty
         search(typedQuery, null, null, true);
@@ -130,7 +113,7 @@ $(document).ready(function($) {
 
     // Initialize player
     $("#jquery_jplayer_1").jPlayer({
-        swfPath: config.appPath + "js",
+        swfPath: config.appUrl + "js",
         supplied: "mp3",
         wmode: "window",
         smoothPlayBar: true,
@@ -173,7 +156,7 @@ $(document).ready(function($) {
             //change url with new query and page back support
             window.history.pushState(newQuery, $('title').html(), "?q=" + newQuery);
             //artist name for title
-            document.title = newQuery.split(" -")[0] + " - Alashov Music";
+            document.title = newQuery.split(" -")[0] + " - datmusic";
         };
 
         config.oldQuery = newQuery;
@@ -199,7 +182,7 @@ $(document).ready(function($) {
         }
 
         $.ajax({
-            url: vkConfig.url,
+            url: config.proxyMode ? config.appUrl + "search.php" : vkConfig.url,
             data: data,
             method: "GET",
             dataType: "jsonp",
@@ -236,7 +219,7 @@ $(document).ready(function($) {
                 //appending new items to list
                 for (var i = 1; i < msg.response.length; i++) {
 
-                    downloadUrl = config.appPath;
+                    downloadUrl = config.downloadServerUrl;
                     ownerId = msg.response[i].owner_id;
                     aid = msg.response[i].aid;
 
@@ -256,13 +239,16 @@ $(document).ready(function($) {
                     audioDuration = msg.response[i].duration.toTime();
 
                     $('#result > .list-group')
-                        .append('<li class="list-group-item"><span class="badge">' + audioDuration + '</span><span class="badge play" data-i18n="[title]clickToPlay"><span class="glyphicon glyphicon-play"></span></span><a class="iframe-download" data-i18n="[title]clickToDownload" target="_blank" data-src="' + msg.response[i].url + '" href="' + downloadUrl + '">' + audioTitle + '</a></li>');
+                        .append('<li class="list-group-item"><span class="badge">' + audioDuration + '</span><span class="badge play" data-i18n="[title]clickToPlay"><span class="glyphicon glyphicon-play"></span></span><a class="iframe-download" data-i18n="[title]clickToDownload" target="_blank" data-src="' + (config.proxyMode ? downloadUrl : msg.response[i].url) + '" href="' + downloadUrl + '">' + audioTitle + '</a></li>');
                 };
                 $(".list-group").i18n();
                 $('.iframe-download').on('click', function(event) {
                     event.preventDefault();
                     url = $(this).attr('href');
-                    $("<iframe/>").attr({src: url, style: "visibility:hidden;display:none"}).appendTo($('body'));
+                    $("<iframe/>").attr({
+                        src: url,
+                        style: "visibility:hidden;display:none"
+                    }).appendTo($('body'));
                 });
 
                 //tracking search query

@@ -4,7 +4,7 @@ set_time_limit(0);
 ini_set('display_errors', 0);
 
 $audioId = $_GET["audio_id"];
-$token = "e9dbafe947e48136f15bbaf1184095282f53bb146441910421e180b46fa6cf6cf8c37f7de3f525d2c121d"; //get your own if don't works
+$token = "fff9ef502df4bb10d9bf50dcd62170a24c69e98e4d847d9798d63dacf474b674f9a512b2b3f7e8ebf1d69"; //get your own if don't works
 
 if (!isset($_GET["audio_id"]) && isset($_GET['id'])) {
   $audioId = split(":", $_GET['id']);
@@ -144,7 +144,7 @@ function startsWith($haystack, $needle) {
 function notFound() {
   header('HTTP/1.0 404 Not Found');
   //your not found file
-  readfile("/home/alashov/www/.config/404.html");
+  readfile("/home/alashov/web/.config/404.html");
   exit();
 }
 ?>

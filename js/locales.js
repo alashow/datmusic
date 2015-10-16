@@ -16,7 +16,6 @@ var locales = {
             "settings": {
                 "title": "Settings",
                 "performerOnly": "Search only by artist name",
-                "liveSearch": "Live search",
                 "language": {
                     "title": "Language",
                     "en": "English",
@@ -49,7 +48,6 @@ var locales = {
             "settings": {
                 "title": "Настройки",
                 "performerOnly": "Поиск только по имени исполнителя",
-                "liveSearch": "Живой поиск",
                 "language": {
                     "title": "Язык",
                     "en": "Английский",
@@ -82,7 +80,6 @@ var locales = {
             "settings": {
                 "title": "Gurnamalar",
                 "performerOnly": "Diňe aýdymçynyň ady boyunça gözle",
-                "liveSearch": "Ýazyp otyrkam gözle",
                 "language": {
                     "title": "Dil",
                     "en": "Iňlisçe",
