@@ -85,7 +85,7 @@ function downloadFile($url, $path) {
 function forceDownload($filePath, $fileName) {
   header("Cache-Control: private");
   header("Content-Description: File Transfer");
-  header("Content-Disposition: attachment; filename=" . makeSafe(transliterate($fileName)));
+  header("Content-Disposition: attachment; filename=\"" . makeSafe(transliterate($fileName)) . "\"");
   header("Content-Type: audio/mpeg");
   header("Content-length: " . filesize($filePath));
   readfile($filePath);
