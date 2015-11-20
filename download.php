@@ -47,11 +47,11 @@ $audio = $json['response'][0];
 $fileName = $audio["artist"] . " - " . $audio["title"] . ".mp3";
 $audioUrl = $audio["url"];
 
-$filePath = "dl/" . md5($audioId); //caching mp3s, md5 for unique audioIds
+$filePath = "dl/" . md5($audioId) . ".mp3"; //caching mp3s, md5 for unique audioIds
 
 if (file_exists($filePath)) {
   if ($isStream) {
-    stream($filePath);
+    stream($filePath, $fileName);
   } else {
     forceDownload($filePath, $fileName);
   }
@@ -59,7 +59,7 @@ if (file_exists($filePath)) {
 } else {
   if (downloadFile($audioUrl, $filePath)) {
     if ($isStream) {
-      stream($filePath);
+      stream($filePath, $fileName);
     } else {
       forceDownload($filePath, $fileName);
     }
@@ -110,14 +110,14 @@ function forceDownload($filePath, $fileName) {
 }
 
 /**
- * Stream-able file handler
+ * Stream audio. Now just redirects to file.
  *
- * @param String $file_location
- * @param Header|String $content_type
+ * @param String $filePath path of file
+ * @param String $fileName name of audio for log
  * @return content
  */
-function stream($file, $content_type = 'audio/mpeg') {
-    writeStream("$filePath $filename"); //log
+function stream($file, $fileName) {
+    writeStream("$file $filename"); //log
 
     @error_reporting(0);
     // Make sure the files exists, otherwise we are wasting our time
@@ -125,75 +125,8 @@ function stream($file, $content_type = 'audio/mpeg') {
         notFound();
     }
 
-    // Get file size
-    $filesize = sprintf("%u", filesize($file));
-
-    // Handle 'Range' header
-    if(isset($_SERVER['HTTP_RANGE'])){
-        $range = $_SERVER['HTTP_RANGE'];
-    } else {
-      $range = FALSE;
-    }
-
-    //Is range
-    if($range){
-        $partial = true;
-        list($param, $range) = explode('=',$range);
-        // Bad request - range unit is not 'bytes'
-        if(strtolower(trim($param)) != 'bytes'){ 
-            header("HTTP/1.1 400 Invalid Request");
-            exit;
-        }
-        // Get range values
-        $range = explode(',',$range);
-        $range = explode('-',$range[0]); 
-        // Deal with range values
-        if ($range[0] === ''){
-            $end = $filesize - 1;
-            $start = $end - intval($range[0]);
-        } else if ($range[1] === '') {
-            $start = intval($range[0]);
-            $end = $filesize - 1;
-        } else { 
-            // Both numbers present, return specific range
-            $start = intval($range[0]);
-            $end = intval($range[1]);
-            if ($end >= $filesize || (!$start && (!$end || $end == ($filesize - 1)))) {
-              $partial = false; // Invalid range/whole file specified, return whole file
-            }
-        }
-        $length = $end - $start + 1;
-    } else { // No range requested
-      $partial = false; 
-    }
-
-    // Send standard headers
-    header("Content-Type: $content_type");
-    header("Content-Length: $filesize");
-    header('Accept-Ranges: bytes');
-
-    // send extra headers for range handling...
-    if ($partial) {
-        header('HTTP/1.1 206 Partial Content');
-        header("Content-Range: bytes $start-$end/$filesize");
-        if (!$fp = fopen($file, 'rb')) {
-            header("HTTP/1.1 500 Internal Server Error");
-            exit;
-        }
-        if ($start) {
-          fseek($fp,$start);
-        }
-        while($length){
-            set_time_limit(0);
-            $read = ($length > 8192) ? 8192 : $length;
-            $length -= $read;
-            print(fread($fp,$read));
-        }
-        fclose($fp);
-    } else { //just send the whole file
-      readfile($file); 
-    }
-    exit;
+    //just redirect to file
+    header("Location: /$file");
 }
 
 /**
