@@ -1,7 +1,8 @@
 /* ========================================================================
- * Music v1.2.4
+ * Music v1.2.7
  * https://github.com/alashow/music
  * ======================================================================== */
+ 
 $(document).ready(function($) {
 
     /* ========================================================================
@@ -19,6 +20,7 @@ $(document).ready(function($) {
     };
 
     var config = {
+        title: "datmusic",
         appUrl: "http://datmusic.xyz/",
         downloadServerUrl: "http://datmusic.xyz/", //change if download.php file located elsewhere
         proxyMode: true, //when proxyMode enabled, search will performed through server (search.php), advantages of proxyMode are: private accessToken, less captchas. Disadvantages: preview of audio will be slower
@@ -29,7 +31,8 @@ $(document).ready(function($) {
         defaultLang: "en",
         langCookie: "musicLang",
         sortCookie: "musicSort",
-        performerOnlyCookie: "musicPerformerOnly"
+        performerOnlyCookie: "musicPerformerOnly",
+        currentTrack: -1
     };
 
     i18n.init({
@@ -120,7 +123,16 @@ $(document).ready(function($) {
         keyEnabled: true,
         remainingDuration: true,
         toggleDuration: true,
-        volume: 1
+        volume: 1,
+        ended: function() {
+            itemCount = $('.list-group-item').length;
+            console.log("#" + config.currentTrack + " ended, audio count in dom = " + itemCount);
+            if (config.currentTrack >= 0 && itemCount >= config.currentTrack) {
+                play($($('.list-group-item')[config.currentTrack + 1]).find('.play'));
+            } else {
+                console.log('seems like there no audios to play, i think');
+            }
+        }
     });
     $('[data-toggle="tooltip"]').tooltip();
 
@@ -156,7 +168,7 @@ $(document).ready(function($) {
             //change url with new query and page back support
             window.history.pushState(newQuery, $('title').html(), "?q=" + newQuery);
             //artist name for title
-            document.title = newQuery.split(" -")[0] + " - datmusic";
+            document.title = newQuery.split(" -")[0] + " - " + config.title;
         };
 
         config.oldQuery = newQuery;
@@ -220,28 +232,36 @@ $(document).ready(function($) {
                 for (var i = 1; i < msg.response.length; i++) {
 
                     downloadUrl = config.downloadServerUrl;
+                    streamUrl = config.downloadServerUrl;
                     ownerId = msg.response[i].owner_id;
                     aid = msg.response[i].aid;
 
                     //little hard code :)
                     if (config.prettyDownloadUrlMode) {
+                        streamUrl += "stream/";
                         //vk ownerId for groups is negative number, shit. invers it.
                         if (ownerId < 0) {
                             ownerId *= -1;
                             downloadUrl += "-";
+                            streamUrl += "-";
                         }
-                        downloadUrl += encode(ownerId) + ":" + encode(aid);
+                        prettyId = encode(ownerId) + ":" + encode(aid)
+                        downloadUrl += prettyId;
+                        streamUrl += prettyId;
                     } else {
                         downloadUrl += "download.php?audio_id=" + ownerId + "_" + aid;
+                        streamUrl += "download.php?stream=true&audio_id=" + ownerId + "_" + aid;
                     }
 
                     audioTitle = msg.response[i].artist + ' - ' + msg.response[i].title;
                     audioDuration = msg.response[i].duration.toTime();
 
                     $('#result > .list-group')
-                        .append('<li class="list-group-item"><span class="badge">' + audioDuration + '</span><span class="badge play" data-i18n="[title]clickToPlay"><span class="glyphicon glyphicon-play"></span></span><a class="iframe-download" data-i18n="[title]clickToDownload" target="_blank" data-src="' + (config.proxyMode ? downloadUrl : msg.response[i].url) + '" href="' + downloadUrl + '">' + audioTitle + '</a></li>');
+                        .append('<li class="list-group-item"><span class="badge">' + audioDuration + '</span><span class="badge play" data-i18n="[title]clickToPlay"><span class="glyphicon glyphicon-play"></span></span><a class="iframe-download" data-i18n="[title]clickToDownload" target="_blank" data-src="' + (config.proxyMode ? streamUrl : msg.response[i].url) + '" href="' + downloadUrl + '">' + audioTitle + '</a></li>');
                 };
+
                 $(".list-group").i18n();
+
                 $('.iframe-download').on('click', function(event) {
                     event.preventDefault();
                     url = $(this).attr('href');
@@ -259,19 +279,38 @@ $(document).ready(function($) {
                 };
 
                 $('.play').on('click', function(event) {
-
-                    //Change source of audio, play then show
-                    $("#jquery_jplayer_1").jPlayer("setMedia", {
-                        mp3: $(this).parent().find('a').attr('data-src')
-                    });
-
-                    $("#jquery_jplayer_1").jPlayer("play");
-                    $('#jp_container_1').show();
-                    window.scrollTo(0, 0);
+                    play(this);
                 });
                 $('#loading').hide();
             }
         });
+    }
+
+    /**
+     * Set audio, play, show, set index, restate audios.
+     * @param el .play button element. function will find audio src from parent of it.
+     **/
+    function play(el) {
+        $("#jquery_jplayer_1").jPlayer("setMedia", {
+            mp3: $(el).parent().find('a').attr('data-src')
+        });
+
+        //do magic
+        $("#jquery_jplayer_1").jPlayer("play");
+        $('#jp_container_1').show();
+        
+        //set current track index
+        config.currentTrack = $(".list-group-item").index($(el).parent());
+
+        // changing all paused items to play
+        $('.list-group').find('.glyphicon-pause').each(function(index, e) {
+            $(e).removeClass('glyphicon-pause');           
+            $(e).addClass('glyphicon-play');
+        });
+
+        //change current audio to playing state
+        $(el).find('.glyphicon').removeClass('glyphicon-play');
+        $(el).find('.glyphicon').addClass('glyphicon-pause');
     }
 
     //Clear list and append given error
@@ -370,6 +409,7 @@ $(document).ready(function($) {
 
         return decoded;
     }
+    // end functions from gist
 
     //Sec To Time
     Number.prototype.toTime = function() {

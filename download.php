@@ -1,9 +1,17 @@
 <?php
+/* ========================================================================
+ * Music v1.2.7
+ * https://github.com/alashow/music
+ * ======================================================================== */
+
 ignore_user_abort(true);
 set_time_limit(0);
 ini_set('display_errors', 0);
 
+include 'log.php';
+
 $audioId = $_GET["audio_id"];
+$isStream = isset($_REQUEST["stream"]);
 $token = "fff9ef502df4bb10d9bf50dcd62170a24c69e98e4d847d9798d63dacf474b674f9a512b2b3f7e8ebf1d69"; //get your own if don't works
 
 if (!isset($_GET["audio_id"]) && isset($_GET['id'])) {
@@ -23,7 +31,7 @@ if (!isset($_GET["audio_id"]) && isset($_GET['id'])) {
 }
 
 if (strlen($audioId) <= 1) {
-  notFound();
+    notFound();
 }
 
 $audioGetUrl = "https://api.vk.com/method/audio.getById?audios=" . $audioId . "&access_token=" . $token;
@@ -42,11 +50,19 @@ $audioUrl = $audio["url"];
 $filePath = "dl/" . md5($audioId); //caching mp3s, md5 for unique audioIds
 
 if (file_exists($filePath)) {
-  forceDownload($filePath, $fileName);
+  if ($isStream) {
+    stream($filePath);
+  } else {
+    forceDownload($filePath, $fileName);
+  }
   return;
 } else {
   if (downloadFile($audioUrl, $filePath)) {
-    forceDownload($filePath, $fileName);
+    if ($isStream) {
+      stream($filePath);
+    } else {
+      forceDownload($filePath, $fileName);
+    }
   }
 }
 
@@ -83,12 +99,101 @@ function downloadFile($url, $path) {
  * @param $fileName name of file to return
  */
 function forceDownload($filePath, $fileName) {
+  writeDownload("$filePath $filename"); //log
+
   header("Cache-Control: private");
   header("Content-Description: File Transfer");
   header("Content-Disposition: attachment; filename=\"" . makeSafe(transliterate($fileName)) . "\"");
   header("Content-Type: audio/mpeg");
   header("Content-length: " . filesize($filePath));
   readfile($filePath);
+}
+
+/**
+ * Stream-able file handler
+ *
+ * @param String $file_location
+ * @param Header|String $content_type
+ * @return content
+ */
+function stream($file, $content_type = 'audio/mpeg') {
+    writeStream("$filePath $filename"); //log
+
+    @error_reporting(0);
+    // Make sure the files exists, otherwise we are wasting our time
+    if (!file_exists($file)) {
+        notFound();
+    }
+
+    // Get file size
+    $filesize = sprintf("%u", filesize($file));
+
+    // Handle 'Range' header
+    if(isset($_SERVER['HTTP_RANGE'])){
+        $range = $_SERVER['HTTP_RANGE'];
+    } else {
+      $range = FALSE;
+    }
+
+    //Is range
+    if($range){
+        $partial = true;
+        list($param, $range) = explode('=',$range);
+        // Bad request - range unit is not 'bytes'
+        if(strtolower(trim($param)) != 'bytes'){ 
+            header("HTTP/1.1 400 Invalid Request");
+            exit;
+        }
+        // Get range values
+        $range = explode(',',$range);
+        $range = explode('-',$range[0]); 
+        // Deal with range values
+        if ($range[0] === ''){
+            $end = $filesize - 1;
+            $start = $end - intval($range[0]);
+        } else if ($range[1] === '') {
+            $start = intval($range[0]);
+            $end = $filesize - 1;
+        } else { 
+            // Both numbers present, return specific range
+            $start = intval($range[0]);
+            $end = intval($range[1]);
+            if ($end >= $filesize || (!$start && (!$end || $end == ($filesize - 1)))) {
+              $partial = false; // Invalid range/whole file specified, return whole file
+            }
+        }
+        $length = $end - $start + 1;
+    } else { // No range requested
+      $partial = false; 
+    }
+
+    // Send standard headers
+    header("Content-Type: $content_type");
+    header("Content-Length: $filesize");
+    header('Accept-Ranges: bytes');
+
+    // send extra headers for range handling...
+    if ($partial) {
+        header('HTTP/1.1 206 Partial Content');
+        header("Content-Range: bytes $start-$end/$filesize");
+        if (!$fp = fopen($file, 'rb')) {
+            header("HTTP/1.1 500 Internal Server Error");
+            exit;
+        }
+        if ($start) {
+          fseek($fp,$start);
+        }
+        while($length){
+            set_time_limit(0);
+            $read = ($length > 8192) ? 8192 : $length;
+            $length -= $read;
+            print(fread($fp,$read));
+        }
+        fclose($fp);
+    } else { //just send the whole file
+      readfile($file); 
+    }
+    exit;
 }
 
 /**
@@ -116,7 +221,7 @@ function transliterate($textCyryllic = null, $textLatyn = null) {
 
 // https://gist.github.com/alashow/07d9ef9c02ee697ab47d
 function decode($encoded) {
-  $map = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z', '1', '2', '3'];
+  $map = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z', '1', '2', '3');
   
   $length = count($map);
   
@@ -147,4 +252,15 @@ function notFound() {
   readfile("/home/alashov/web/.config/404.html");
   exit();
 }
+
+
+function getAllHeaders() { 
+  $headers = ''; 
+  foreach ($_SERVER as $name => $value) { 
+    if (substr($name, 0, 5) == 'HTTP_') {
+      $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value; 
+    } 
+  } 
+  return $headers; 
+} 
 ?>

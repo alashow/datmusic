@@ -17,6 +17,7 @@ Rewrite example for nginx:
 ```
 location / {
   rewrite "^/(-?\w{0,20}:\w{0,20})$" /download.php?id=$1 last;
+  rewrite "^/stream/(-?\w{0,20}:\w{0,20})$" /download.php?stream=true&id=$1 last;
 }
 ```
 
