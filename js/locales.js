@@ -7,6 +7,7 @@ var locales = {
     en: {
         translation: {
             "searchPlaceholder": "Type search query",
+            "shortcuts": "\"→\" Next track, \"←\" Previous track, \"Space\" Play/pause",
             "apkDownload": "Download app for android?",
             "close": "Close",
             "error": "Error: __error__",
@@ -39,6 +40,7 @@ var locales = {
     ru: {
         translation: {
             "searchPlaceholder": "Поиск",
+            "shortcuts": "\"→\" Следующий трек, \"← \" Предыдущая трек, \"Space\" Воспроизведение/пауза",
             "apkDownload": "Скачать приложение для Android?",
             "close": "Закрыть",
             "error": "Ошибка: __error__",
@@ -71,6 +73,7 @@ var locales = {
     tk: {
         translation: {
             "searchPlaceholder": "Gözleg sözüni ýazyň",
+            "shortcuts": "\"→\" Indiki aýdym, \"←\" Öňki aýdym, \"Space\" Oýnat/duzzur",
             "apkDownload": "Android app indir?",
             "close": "Ýap",
             "error": "Ýalňyşlyk: __error__",

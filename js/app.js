@@ -2,8 +2,17 @@
  * Music v1.2.7
  * https://github.com/alashow/music
  * ======================================================================== */
- 
+
 $(document).ready(function($) {
+
+    $(document).keydown(function(e) {
+        var unicode = e.charCode ? e.charCode : e.keyCode;
+        if (unicode == 39) {
+            playNext();
+        } else if (unicode == 37) {
+            playPrev();
+        }
+    });
 
     /* ========================================================================
      * To get your own token you need first create vk application at https://vk.com/editapp?act=create
@@ -42,6 +51,7 @@ $(document).ready(function($) {
     }, function(err, t) {
         $("body").i18n();
     });
+    $('[data-toggle="tooltip"]').tooltip();
 
     //Download apk if android
     var ua = navigator.userAgent.toLowerCase();
@@ -78,6 +88,9 @@ $(document).ready(function($) {
     $('#languageSelect').on('change', function(event) {
         i18n.setLng($(this).val(), function(err, t) {
             $("body").i18n();
+            title = $('#jp_container_1').attr('title');
+            $('#jp_container_1').attr('data-original-title', title);
+            $('#jp_container_1').attr('title', '');
         });
     });
 
@@ -124,17 +137,24 @@ $(document).ready(function($) {
         remainingDuration: true,
         toggleDuration: true,
         volume: 1,
+        keyBindings: {
+            play: {
+                key: 32, // p
+                fn: function(f) {
+                    if (f.status.paused) {
+                        f.play();
+                    } else {
+                        f.pause();
+                    }
+                }
+            }
+        },
         ended: function() {
             itemCount = $('.list-group-item').length;
             console.log("#" + config.currentTrack + " ended, audio count in dom = " + itemCount);
-            if (config.currentTrack >= 0 && itemCount >= config.currentTrack) {
-                play($($('.list-group-item')[config.currentTrack + 1]).find('.play'));
-            } else {
-                console.log('seems like there no audios to play, i think');
-            }
+            playNext();
         }
     });
-    $('[data-toggle="tooltip"]').tooltip();
 
     window.onpopstate = function(event) {
         searchFromQueryParam();
@@ -286,6 +306,26 @@ $(document).ready(function($) {
         });
     }
 
+    function playNext() {
+        itemCount = $('.list-group-item').length - 1;
+        if (config.currentTrack >= 0 && itemCount >= config.currentTrack) {
+            play($($('.list-group-item')[config.currentTrack + 1]).find('.play'));
+        } else { //else play first track
+            console.log('seems like there no audios to play, i think. playing first one.');
+            play($($('.list-group-item')[0]).find('.play'));
+        }
+    }
+
+    function playPrev() {
+        if (config.currentTrack - 1 >= 0) {
+            play($($('.list-group-item')[config.currentTrack - 1]).find('.play'));
+        } else {
+            console.log('this is first audio, nothing in back. playing last one.');
+            itemCount = $('.list-group-item').length - 1;
+            play($($('.list-group-item')[itemCount]).find('.play'));
+        }
+    }
+
     /**
      * Set audio, play, show, set index, restate audios.
      * @param el .play button element. function will find audio src from parent of it.
@@ -298,13 +338,13 @@ $(document).ready(function($) {
         //do magic
         $("#jquery_jplayer_1").jPlayer("play");
         $('#jp_container_1').show();
-        
+
         //set current track index
         config.currentTrack = $(".list-group-item").index($(el).parent());
 
         // changing all paused items to play
         $('.list-group').find('.glyphicon-pause').each(function(index, e) {
-            $(e).removeClass('glyphicon-pause');           
+            $(e).removeClass('glyphicon-pause');
             $(e).addClass('glyphicon-play');
         });
 
