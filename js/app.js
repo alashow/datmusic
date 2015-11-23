@@ -6,6 +6,10 @@
 $(document).ready(function($) {
 
     $(document).keydown(function(e) {
+        if ($('#query').is(':focus')) {
+            return; //he is typing man, don't disturb him.
+        };
+
         var unicode = e.charCode ? e.charCode : e.keyCode;
         if (unicode == 39) {
             playNext();
@@ -164,19 +168,24 @@ $(document).ready(function($) {
     if (!searchFromQueryParam()) {
         //Simulating search for demo of searching
         var artists = [
-            "Kygo", "Ed Sheeran", "Toe",
-            "Coldplay", "The xx", "MS MR", "Macklemore",
-            "Lorde", "Birdy", "Seinabo Sey", "Sia", "M83",
-            "Hans Zimmer", "Keaton Henson", "Yiruma", "Martin Garrix",
-            "Calvin Harris", "Zinovia", "Avicii", "Of Monsters and Men",
-            "Josef Salvat", "Sam Smith", "deadmau5", "Yann Tiersen",
-            "Jessie J", " Maroon 5", "X ambassadors", "Fink",
-            "Young Summer", "Lana Del Rey", "Arctic Monkeys",
-            "Ludovico Einaudi", "Lera Lynn", "Bastille",
-            "Nils Frahm", "Ben Howard", "Andrew Belle",
-            "Mumford & Sons", "Ryan Keen", "Zes", "Greg Haines",
-            "Max Richter"
+            "Agnes Obel", "Aloe Black", "Andrew Belle", "Angus Stone", "Arctic Monkeys",
+            "Avicii", "Balmorhea", "Barcelona", "Bastille", "Bastille", "Ben Howard",
+            "Benj Heard", "Birdy", "Broods", "Calvin Harris", "Charlotte OC", "City of The Sun",
+            "Clint Mansell", "Coldplay", "Daft Punk", "Damien Rice", "Daniela Andrade",
+            "Daughter", "David O'Dowda", "Dawn Golden", "Dirk Maassen", "Ed Sheeran",
+            "Fabrizio Paterlini", "Fink", "Fleurie", "Gem club", "Greg Haines", "Greg Maroney",
+            "Groen Land", "Hans Zimmer", "Hozier", "Jamie XX", "Jaymes Young", "Jessie J",
+            "Josef Salvat", "Julia Kent", "Kai Engel", "Keaton Henson", "Kina Grannis", "Kodaline",
+            "Kygo", "Kyle Landry", "Lana Del Rey", "Lera Lynn", "Lights & Motion", "Linus Young",
+            "Lo-Fang", "Lo-Fang", "Lorde", "Ludovico Einaudi", "M83", "MONO", "MS MR", "Macklemore",
+            "Mammals", "Maroon 5", "Martin Garrix", "Mattia Cupelli", "Max Richter", "Message To Bears",
+            "Mogwai", "Mumford & Sons", "Nils Frahm", "ODESZA", "Of Monsters and Men", "Oh Wonder",
+            "Philip Glass", "Phoebe Ryan", "Ryan Keen", "Sam Smith", "Seinabo Sey", "Sia",
+            "Takahiro Kido", "The xx", "Tom Odell", "VLNY", "Wye Oak", "X ambassadors",
+            "Yann Tiersen", "Yiruma", "Young Summer", "Zack Hemsey", "Zinovia", "deadmau5",
+            "pg.lost", "Ólafur Arnalds", "Нервы"
         ]
+
         var demoArtist = artists[Math.floor(Math.random() * artists.length)];
         search(demoArtist, null, null, false, true);
         $('#query').val(demoArtist);
@@ -287,7 +296,7 @@ $(document).ready(function($) {
                     url = $(this).attr('href');
                     $("<iframe/>").attr({
                         src: url,
-                        style: "visibility:hidden;display:none"
+                        style: "visibility:hidden; display:none"
                     }).appendTo($('body'));
                 });
 
@@ -299,38 +308,60 @@ $(document).ready(function($) {
                 };
 
                 $('.play').on('click', function(event) {
-                    play(this);
+                    play($(".list-group-item").index($(this).parent()));
                 });
                 $('#loading').hide();
             }
         });
     }
 
+    /**
+     *  Play next track.
+     **/
     function playNext() {
+        if (0 > config.currentTrack) {
+            return; //there no music currently playing.
+        };
+
         itemCount = $('.list-group-item').length - 1;
-        if (config.currentTrack >= 0 && itemCount >= config.currentTrack) {
-            play($($('.list-group-item')[config.currentTrack + 1]).find('.play'));
+        if (config.currentTrack + 1 <= itemCount) {
+            play(config.currentTrack + 1);
         } else { //else play first track
             console.log('seems like there no audios to play, i think. playing first one.');
-            play($($('.list-group-item')[0]).find('.play'));
+            play(0);
         }
     }
 
+    /**
+     *  Play previous track
+     **/
     function playPrev() {
+        if (0 > config.currentTrack) {
+            return; //there no music currently playing.
+        };
+
         if (config.currentTrack - 1 >= 0) {
-            play($($('.list-group-item')[config.currentTrack - 1]).find('.play'));
-        } else {
+            play(config.currentTrack - 1);
+        } else { //else play last track
             console.log('this is first audio, nothing in back. playing last one.');
             itemCount = $('.list-group-item').length - 1;
-            play($($('.list-group-item')[itemCount]).find('.play'));
+            play(itemCount);
         }
     }
 
     /**
      * Set audio, play, show, set index, restate audios.
-     * @param el .play button element. function will find audio src from parent of it.
+     * @param index of audio, in .list-group-item
      **/
-    function play(el) {
+    function play(index) {
+
+        el = $($('.list-group-item')[index]).find('.play');
+
+        if (!el.length) {
+            console.log("#" + index + " audio not found in dom")
+            return;
+        };
+
         $("#jquery_jplayer_1").jPlayer("setMedia", {
             mp3: $(el).parent().find('a').attr('data-src')
         });
@@ -340,7 +371,7 @@ $(document).ready(function($) {
         $('#jp_container_1').show();
 
         //set current track index
-        config.currentTrack = $(".list-group-item").index($(el).parent());
+        config.currentTrack = index;
 
         // changing all paused items to play
         $('.list-group').find('.glyphicon-pause').each(function(index, e) {
