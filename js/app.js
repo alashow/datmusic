@@ -6,16 +6,18 @@
 $(document).ready(function($) {
 
     $(document).keydown(function(e) {
-        if ($('#query').is(':focus')) {
-            return; //he is typing man, don't disturb him.
-        };
+        if (!$('#query').is(':focus')) {
+            var unicode = e.charCode ? e.charCode : e.keyCode;
+            if (unicode == 39) {
+                playNext();
 
-        var unicode = e.charCode ? e.charCode : e.keyCode;
-        if (unicode == 39) {
-            playNext();
-        } else if (unicode == 37) {
-            playPrev();
-        }
+                track('button', 'next');
+            } else if (unicode == 37) {
+                playPrev();
+
+                track('button', 'prev');
+            }
+        };
     });
 
     /* ========================================================================
@@ -63,8 +65,11 @@ $(document).ready(function($) {
     if (isAndroid) {
         var r = confirm(i18n.t("apkDownload"));
         if (r == true) {
+            track('android', "confirm");
             var win = window.open("http://bitly.com/M-APK", '_blank');
             win.focus();
+        } else {
+            track('android', "deny");
         }
     }
 
@@ -145,6 +150,7 @@ $(document).ready(function($) {
             play: {
                 key: 32, // p
                 fn: function(f) {
+                    track('button', 'play/pause');
                     if (f.status.paused) {
                         f.play();
                     } else {
@@ -301,11 +307,7 @@ $(document).ready(function($) {
                 });
 
                 //tracking search query
-                if (analytics) {
-                    try {
-                        ga('send', 'event', 'search', _query);
-                    } catch (e) {}
-                };
+                track('search', newQuery);
 
                 $('.play').on('click', function(event) {
                     play($(".list-group-item").index($(this).parent()));
@@ -330,6 +332,8 @@ $(document).ready(function($) {
             console.log('seems like there no audios to play, i think. playing first one.');
             play(0);
         }
+
+        track('play', "next");
     }
 
     /**
@@ -347,6 +351,8 @@ $(document).ready(function($) {
             itemCount = $('.list-group-item').length - 1;
             play(itemCount);
         }
+
+        track('play', "prev");
     }
 
     /**
@@ -382,6 +388,8 @@ $(document).ready(function($) {
         //change current audio to playing state
         $(el).find('.glyphicon').removeClass('glyphicon-play');
         $(el).find('.glyphicon').addClass('glyphicon-pause');
+
+        track('playAudio', $($('.list-group-item')[index]).find('a').html());
     }
 
     //Clear list and append given error
@@ -408,9 +416,6 @@ $(document).ready(function($) {
     //Showing captcha with given captcha id and image
     function showCaptcha(captchaSid, captchaImage) {
         //Tracking captchas
-        try {
-            ga('send', 'event', 'captcha');
-        } catch (e) {}
         $('#captchaModal').modal("show");
         $('#captchaImage').attr('src', captchaImage);
 
@@ -431,6 +436,8 @@ $(document).ready(function($) {
                 $('#captchaSend').trigger('click');
             };
         });
+
+        track('captcha');
     }
 
     /**
@@ -496,5 +503,15 @@ $(document).ready(function($) {
         }
         var time = minutes + ':' + seconds;
         return time;
+    }
+
+    function track(type, value) {
+        try {
+            if (ga) {
+                ga('send', 'event', type, value);
+            };
+        } catch (e) {
+            console.error("outer", e.message);
+        }
     }
 });

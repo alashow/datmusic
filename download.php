@@ -99,7 +99,7 @@ function downloadFile($url, $path) {
  * @param $fileName name of file to return
  */
 function forceDownload($filePath, $fileName) {
-  writeDownload("$filePath $filename"); //log
+  writeDownload("$filePath $fileName"); //log
 
   header("Cache-Control: private");
   header("Content-Description: File Transfer");
@@ -117,7 +117,7 @@ function forceDownload($filePath, $fileName) {
  * @return content
  */
 function stream($file, $fileName) {
-    writeStream("$file $filename"); //log
+    writeStream("$file $fileName"); //log
 
     @error_reporting(0);
     // Make sure the files exists, otherwise we are wasting our time
@@ -160,7 +160,7 @@ function decode($encoded) {
   
   $decoded = 0;
   
-  for ($i = strlen($encoded) - 1;$i >= 0;$i--) {
+  for ($i = strlen($encoded) - 1; $i >= 0; $i--) {
     $ch = $encoded[$i];
     $val = array_search($ch, $map);
     $decoded = ($decoded * $length) + $val;
@@ -185,15 +185,4 @@ function notFound() {
   readfile("/home/alashov/web/.config/404.html");
   exit();
 }
-
-
-function getAllHeaders() { 
-  $headers = ''; 
-  foreach ($_SERVER as $name => $value) { 
-    if (substr($name, 0, 5) == 'HTTP_') {
-      $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value; 
-    } 
-  } 
-  return $headers; 
-} 
 ?>
