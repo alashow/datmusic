@@ -20,6 +20,15 @@ $(document).ready(function($) {
         };
     });
 
+    $('#player').affix({
+            offset: {
+                top: 400,
+                bottom: function() {
+                    return (this.bottom = $('.footer').outerHeight(true))
+                }
+            }
+    });
+
     /* ========================================================================
      * To get your own token you need first create vk application at https://vk.com/editapp?act=create
      * Then  get your APP_ID and CLIENT_SECRET at application settings
@@ -166,6 +175,19 @@ $(document).ready(function($) {
         }
     });
 
+    //sync playing/paused status with audio element
+    $('.jp-play').click(function () {
+        currentTrackEl = $($('.list-group-item')[config.currentTrack]).find('.play');
+        $(el).find('.glyphicon').addClass('glyphicon-pause');
+        $(el).find('.glyphicon').removeClass('glyphicon-play');
+    });
+
+    $('.jp-pause').click(function () {
+        currentTrackEl = $($('.list-group-item')[config.currentTrack]).find('.play');
+        $(el).find('.glyphicon').addClass('glyphicon-play');
+        $(el).find('.glyphicon').removeClass('glyphicon-pause');
+    });
+
     window.onpopstate = function(event) {
         searchFromQueryParam();
         console.log(event);
@@ -199,6 +221,7 @@ $(document).ready(function($) {
 
     //Main function for search
     function search(newQuery, captcha_sid, captcha_key, analytics, performer_only) {
+        config.currentTrack = -1;
         if (newQuery.length > 1 && newQuery != config.oldQuery) {
             //change url with new query and page back support
             window.history.pushState(newQuery, $('title').html(), "?q=" + newQuery);
@@ -360,8 +383,22 @@ $(document).ready(function($) {
      * @param index of audio, in .list-group-item
      **/
     function play(index) {
-
         el = $($('.list-group-item')[index]).find('.play');
+
+        //pause/play if clicked to current
+        if (index == config.currentTrack) {
+            if (!$('#jquery_jplayer_1').data().jPlayer.status.paused) {
+                $("#jquery_jplayer_1").jPlayer("pause");
+                $(el).find('.glyphicon').removeClass('glyphicon-pause');
+                $(el).find('.glyphicon').addClass('glyphicon-play');
+            } else {
+                $("#jquery_jplayer_1").jPlayer("play");
+                $(el).find('.glyphicon').removeClass('glyphicon-play');
+                $(el).find('.glyphicon').addClass('glyphicon-pause');
+            }
+            return;
+        };
+
 
         if (!el.length) {
             console.log("#" + index + " audio not found in dom")
@@ -375,6 +412,7 @@ $(document).ready(function($) {
         //do magic
         $("#jquery_jplayer_1").jPlayer("play");
         $('#jp_container_1').show();
+        $('#player-space').show();
 
         //set current track index
         config.currentTrack = index;

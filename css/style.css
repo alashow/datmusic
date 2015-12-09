@@ -93,6 +93,17 @@ li.list-group-item a:hover {
 	margin: 10px 0;
 }
 
+#player {
+    position: fixed;
+    right: 10%;
+    width: 80%;
+    z-index: 1000;
+}
+
+#player-space {
+	height: 42px;
+}
+
 /*jPlayer*/
 .jp-audio {
 	position: relative;
@@ -116,6 +127,8 @@ li.list-group-item a:hover {
 	width: 42px;
 	height: 100%;
 	background-color: #2c3e50;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
 }
 .jp-audio .jp-controls a {
 	text-decoration: none;
@@ -150,6 +163,8 @@ li.list-group-item a:hover {
 	right: 0;
 	height: 100%;
 	background-color: #3e5871;
+	border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 .jp-audio .jp-progress .jp-seek-bar {
 	position: absolute;
@@ -157,6 +172,8 @@ li.list-group-item a:hover {
 	left: 0;
 	height: 100%;
 	cursor: pointer;
+	border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 .jp-audio .jp-progress .jp-seek-bar .jp-play-bar {
 	position: absolute;
@@ -165,6 +182,8 @@ li.list-group-item a:hover {
 	width: 0;
 	height: 100%;
 	background-color: #2c3e50;
+	border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 .jp-audio .jp-current-time {
 	position: absolute;
