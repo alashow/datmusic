@@ -1,17 +1,17 @@
 Music
 =====
 
-Search and Download free music from Vk. Using http://vk.com [audio search api](https://vk.com/dev/audio.search).
+Search and Download free music from VK. Using VK [audio search api](https://vk.com/dev/audio.search).
 
 ## Demo
-[alashov.com/music](http://alashov.com/music)
+[datmusic](https://datmusic.xyz)
 ![Demo Screenshot](http://dotjpg.co/XfNk.png)
 
 ## Android Version repo
 [Android Version repo](https://github.com/alashow/music-android)
 
 ## Pretty url mode
-Pretty url mode converts [long links with long numbers](http://alashov.com/music/download.php?audio_id=16051160_137323200) links to ["pretty" links](http://alashov.com/music/JjGBD:AEnvc). [converter gist](https://gist.github.com/alashow/07d9ef9c02ee697ab47d)
+Pretty url mode converts [long links with long numbers](https://datmusic.xyz/download.php?audio_id=16051160_137323200) links to ["pretty" links](https://datmusic.xyz/JjGBD:AEnvc). [converter gist](https://gist.github.com/alashow/07d9ef9c02ee697ab47d)
 
 Rewrite example for nginx:
 ```

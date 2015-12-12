@@ -45,8 +45,8 @@ $(document).ready(function($) {
 
     var config = {
         title: "datmusic",
-        appUrl: "http://datmusic.xyz/",
-        downloadServerUrl: "http://datmusic.xyz/", //change if download.php file located elsewhere
+        appUrl: "https://datmusic.xyz/",
+        downloadServerUrl: "https://datmusic.xyz/", //change if download.php file located elsewhere
         proxyMode: true, //when proxyMode enabled, search will performed through server (search.php), advantages of proxyMode are: private accessToken, less captchas. Disadvantages: preview of audio will be slower
         prettyDownloadUrlMode: true, //converts http://datmusic.xyz/download.php?audio_id=16051160_137323200 to http://datmusic.xyz/JjGBD:AEnvc, see readme for rewriting regex
         performerOnly: false,
