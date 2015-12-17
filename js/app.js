@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.2.7
+ * Music v1.2.8
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -45,8 +45,8 @@ $(document).ready(function($) {
 
     var config = {
         title: "datmusic",
-        appUrl: "https://datmusic.xyz/",
-        downloadServerUrl: "https://datmusic.xyz/", //change if download.php file located elsewhere
+        appUrl: window.location.protocol + "//datmusic.xyz/",
+        downloadServerUrl: window.location.protocol + "//datmusic.xyz/", //change if download.php file located elsewhere
         proxyMode: true, //when proxyMode enabled, search will performed through server (search.php), advantages of proxyMode are: private accessToken, less captchas. Disadvantages: preview of audio will be slower
         prettyDownloadUrlMode: true, //converts http://datmusic.xyz/download.php?audio_id=16051160_137323200 to http://datmusic.xyz/JjGBD:AEnvc, see readme for rewriting regex
         performerOnly: false,
@@ -75,7 +75,7 @@ $(document).ready(function($) {
         var r = confirm(i18n.t("apkDownload"));
         if (r == true) {
             track('android', "confirm");
-            var win = window.open("http://bitly.com/M-APK", '_blank');
+            var win = window.open("https://bitly.com/M-APK", '_blank');
             win.focus();
         } else {
             track('android', "deny");
