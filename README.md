@@ -5,7 +5,15 @@ Search and Download free music from VK. Using VK [audio search api](https://vk.c
 
 ## Demo
 [datmusic](https://datmusic.xyz)
-![Demo Screenshot](http://dotjpg.co/XfNk.png)
+![Demo Screenshot](https://dotjpg.co/XfNk.png)
+
+## Setup
+* Clone project to your server
+* Create "dl" folder with read & write permissions
+* Change your app url in js/app.js (in config)
+* Get your token ([instructions](https://github.com/alashow/music/blob/master/js/app.js#L33))
+* Update your token in app.js and in php files.
+* Minify app.js to app.min.js or just change link to js in index.html
 
 ## Android Version repo
 [Android Version repo](https://github.com/alashow/music-android)
