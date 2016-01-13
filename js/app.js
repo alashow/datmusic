@@ -30,10 +30,7 @@ $(document).ready(function($) {
     });
 
     /* ========================================================================
-     * To get your own token you need first create vk application at https://vk.com/editapp?act=create
-     * Then  get your APP_ID and CLIENT_SECRET at application settings
-     * Now open this url from your logined to vk browser, this will redirect to blank.html with your token:
-     * https://oauth.vk.com/authorize?client_id=APP_ID&client_secret=CLIENT_SECRET&scope=audio,offline&response_type=token
+     * To get your own token follow instructions at https://github.com/alashow/music/wiki#how-to-get-your-own-token
      * ======================================================================== */
     // Default config for vk audio.search api
     var vkConfig = {
