@@ -5,7 +5,7 @@
  * ======================================================================== */
 
 include 'log.php';
-writeSearch($_GET['q']);
+logSearch($_GET['q']);
 
 $apiUrl = "https://api.vk.com/method/audio.search?";
 $params = $_GET;

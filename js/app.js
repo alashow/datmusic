@@ -489,44 +489,6 @@ $(document).ready(function($) {
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
-    // https://gist.github.com/alashow/07d9ef9c02ee697ab47d
-    var map = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
-        'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
-        'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
-        'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't',
-        'u', 'v', 'x', 'y', 'z', '1', '2', '3'
-    ];
-
-    function encode(input) {
-        length = map.length;
-        var encoded = "";
-
-        if (input == 0)
-            return map[0];
-
-        while (input > 0) {
-            val = parseInt(input % length);
-            input = parseInt(input / length);
-            encoded += map[val];
-        }
-
-        return encoded;
-    }
-
-    function decode(encoded) {
-        length = map.length;
-        decoded = 0;
-
-        for (i = encoded.length - 1; i >= 0; i--) {
-            ch = encoded[i];
-            val = map.indexOf(ch);
-            decoded = (decoded * length) + val;
-        }
-
-        return decoded;
-    }
-    // end functions from gist
-
     //Sec To Time
     Number.prototype.toTime = function() {
         var sec_num = parseInt(this, 10);
@@ -552,4 +514,29 @@ $(document).ready(function($) {
             console.error("outer", e.message);
         }
     }
+
+    // https://gist.github.com/alashow/07d9ef9c02ee697ab47d
+    var map = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
+        'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+        'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+        'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't',
+        'u', 'v', 'x', 'y', 'z', '1', '2', '3'
+    ];
+
+    function encode(input) {
+        length = map.length;
+        var encoded = "";
+
+        if (input == 0)
+            return map[0];
+
+        while (input > 0) {
+            val = parseInt(input % length);
+            input = parseInt(input / length);
+            encoded += map[val];
+        }
+
+        return encoded;
+    }
+    // end code from gist
 });

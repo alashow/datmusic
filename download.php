@@ -99,7 +99,7 @@ function downloadFile($url, $path) {
  * @param $fileName name of file to return
  */
 function forceDownload($filePath, $fileName) {
-  writeDownload("$filePath $fileName"); //log
+  logDownload("$filePath $fileName"); //log
 
   header("Cache-Control: private");
   header("Content-Description: File Transfer");
@@ -117,7 +117,7 @@ function forceDownload($filePath, $fileName) {
  * @return content
  */
 function stream($file, $fileName) {
-    writeStream("$file $fileName"); //log
+    logStream("$file $fileName"); //log
 
     @error_reporting(0);
     // Make sure the files exists, otherwise we are wasting our time
@@ -126,7 +126,7 @@ function stream($file, $fileName) {
     }
 
     //just redirect to file
-    header("Location: /$file");
+    header("Location: $file");
 }
 
 /**

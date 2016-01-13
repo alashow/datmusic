@@ -7,13 +7,13 @@
 function writeLog($log){
         file_put_contents("log", $log . ", " . $_SERVER['REMOTE_ADDR'] . "\n", FILE_APPEND);
 }
-function writeSearch($query) {
+function logSearch($query) {
         writeLog("Search, " . getTime() . ", " . $query);
 }
-function writeDownload($title) {
+function logDownload($title) {
         writeLog("Download, " . getTime() . ", " . $title);
 }
-function writeStream($title) {
+function logStream($title) {
         writeLog("Streaming, " . getTime() . ", " . $title);
 }
 function getTime() {
