@@ -4,8 +4,9 @@
  * https://github.com/alashow/music
  * ======================================================================== */
 //get your own if don't works https://github.com/alashow/music/wiki#how-to-get-your-own-token
-$config["token"] = "fff9ef502df4bb10d9bf50dcd62170a24c69e98e4d847d9798d63dacf474b674f9a512b2b3f7e8ebf1d69";
-$config["token_search"] = "fff9ef502df4bb10d9bf50dcd62170a24c69e98e4d847d9798d63dacf474b674f9a512b2b3f7e8ebf1d69";
+//add tokens to array, random one will be used.
+$config["tokens"] = array("fff9ef502df4bb10d9bf50dcd62170a24c69e98e4d847d9798d63dacf474b674f9a512b2b3f7e8ebf1d69");
+$config["token"] = $config["tokens"][array_rand($config["tokens"])];
 $config["dl_folder"] = "dl";
 $config["log_filename"] = "log";
 $config["not_found_file_path"] = "/home/alashov/web/.config/404.html";

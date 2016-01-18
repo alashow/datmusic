@@ -9,7 +9,7 @@ logSearch($_GET['q']);
 
 $apiUrl = "https://api.vk.com/method/audio.search?";
 $params = $_GET;
-$params['access_token'] = $config["token_search"]; //for private access token. if public, comment this line so access token from js will be used
+$params['access_token'] = $config["token"]; //for private access token. if public, comment this line so access token from js will be used
 
 $fullUrl = $apiUrl . http_build_query($params);
 
