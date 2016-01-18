@@ -7,13 +7,13 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>datmusic</title>
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.1/flatly/bootstrap.min.css">
-		<link rel="stylesheet" href="css/style.min.css?v=1.2.8">
+		<link rel="stylesheet" href="css/style.min.css?v=1.3.0">
 	</head>
 	<body>
 		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 			<div class="container">
 				<div class="navbar-header pull-left">
-					<a class="navbar-brand" onclick="window.scrollTo(0, 0);">datmusic</a>
+					<a class="navbar-brand" onclick="window.scrollTo(0, 0);" data-i18n="title">datmusic</a>
 				</div>
 				<div class="navbar-header pull-right">
 					<ul class="nav navbar-nav pull-left">
@@ -112,7 +112,12 @@
 									<input type="checkbox" id="performerOnlyCheck"> <span data-i18n="settings.performerOnly"></span>
 								</label>
 							</div>
-							GitHub: <a href="https://github.com/alashow/music">https://github.com/alashow/music</a>
+							<hr>
+							Android App: <a href="https://bitly.com/M-APK" data-i18n="apkDownloadTitle"></a>
+							<br>
+							<a href="https://github.com/alashow/music">GitHub Repo</a>
+							<br>
+							<a href="https://github.com/alashow/music-android">Android App GitHub Repo</a>
 						</form>
 					</div>
 					<div class="modal-footer">
@@ -126,8 +131,9 @@
 		<script src="//cdn.jsdelivr.net/jplayer/2.9.2/jquery.jplayer.min.js"></script>
 		<script src="js/jquery.cookie.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/i18next.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="js/locales.min.js?v=1.2.7.7" type="text/javascript" charset="utf-8"></script>
-		<script src="js/app.min.js?v=1.2.8.4" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mustache.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/locales.min.js?v=1.3.0" type="text/javascript" charset="utf-8"></script>
+		<script src="js/app.min.js?v=1.3.0" type="text/javascript" charset="utf-8"></script>
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -135,6 +141,18 @@
 			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 			ga('create', 'UA-54770193-1', 'auto');
 			ga('send', 'pageview');
+		</script>
+		<!-- Audio item template -->
+		<script id="audioTemplate" type="x-tmpl-mustache">
+			<li class="list-group-item">
+				<span class="badge">{{duration}}</span>
+				<span class="badge play" title="{{clickToPlay}}" data-i18n="[title]clickToPlay">
+					<span class="glyphicon glyphicon-play"></span>
+				</span>
+				<a title="{{clickToDownload}}" data-i18n="[title]clickToDownload" data-src="{{url.stream}}" href="{{url.download}}" target="_blank">
+					{{audio}}
+				</a>
+			</li>
 		</script>
 	</body>
 </html>

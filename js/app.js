@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.2.8
+ * Music v1.3.0
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -10,11 +10,9 @@ $(document).ready(function($) {
             var unicode = e.charCode ? e.charCode : e.keyCode;
             if (unicode == 39) {
                 playNext();
-
                 track('button', 'next');
             } else if (unicode == 37) {
                 playPrev();
-
                 track('button', 'prev');
             }
         };
@@ -41,7 +39,7 @@ $(document).ready(function($) {
     };
 
     var config = {
-        title: "datmusic",
+        title: "datmusic", //will be changed after i18n init
         appUrl: window.location.protocol + "//datmusic.xyz/",
         downloadServerUrl: window.location.protocol + "//datmusic.xyz/", //change if download.php file located elsewhere
         proxyMode: true, //when proxyMode enabled, search will performed through server (search.php), advantages of proxyMode are: private accessToken, less captchas. Disadvantages: preview of audio will be slower
@@ -62,22 +60,32 @@ $(document).ready(function($) {
         cookieName: config.langCookie,
     }, function(err, t) {
         $("body").i18n();
+        config.title = i18n.t("title");
     });
+
+    //render all tooltips
     $('[data-toggle="tooltip"]').tooltip();
+    
+    //Parse audioTemplate
+    var audioTemplate = $('#audioTemplate').html();
+    Mustache.parse(audioTemplate);
 
     //Download apk if android
-    var ua = navigator.userAgent.toLowerCase();
-    var isAndroid = ua.indexOf("android") > -1;
-    if (isAndroid) {
-        var r = confirm(i18n.t("apkDownload"));
-        if (r == true) {
-            track('android', "confirm");
-            var win = window.open("https://bitly.com/M-APK", '_blank');
-            win.focus();
-        } else {
-            track('android', "deny");
+    if ($.cookie('showAndroidDownload') === undefined) {
+        $.cookie('showAndroidDownload', false, { expires: 2}); //show again after 2 days :)
+        var ua = navigator.userAgent.toLowerCase();
+        var isAndroid = ua.indexOf("android") > -1;
+        if (isAndroid) {
+            var r = confirm(i18n.t("apkDownload"));
+            if (r == true) {
+                track('android', "confirm");
+                var win = window.open("https://bitly.com/M-APK", '_blank');
+                win.focus();
+            } else {
+                track('android', "deny");
+            }
         }
-    }
+    };
 
     //Settings
     $('#settings').on('click', function(event) {
@@ -248,8 +256,10 @@ $(document).ready(function($) {
             data.performer_only = config.performerOnly == true ? 1 : 0;
         }
 
+        //php if url mode
+        url = config.proxyMode ? config.appUrl + "search.php" : vkConfig.url;
         $.ajax({
-            url: config.proxyMode ? config.appUrl + "search.php" : vkConfig.url,
+            url: url,
             data: data,
             method: "GET",
             dataType: "jsonp",
@@ -258,7 +268,7 @@ $(document).ready(function($) {
                 $('#loading').show(); // Show loading
             },
             error: function() {
-                appendError(i18n.t("networError")); //Network error, ajax failed
+                appendError(i18n.t("networkError")); //Network error, ajax failed
             },
             success: function(msg) {
                 if (msg.error) {
@@ -285,7 +295,6 @@ $(document).ready(function($) {
 
                 //appending new items to list
                 for (var i = 1; i < msg.response.length; i++) {
-
                     downloadUrl = config.downloadServerUrl;
                     streamUrl = config.downloadServerUrl;
                     ownerId = msg.response[i].owner_id;
@@ -311,27 +320,30 @@ $(document).ready(function($) {
                     audioTitle = msg.response[i].artist + ' - ' + msg.response[i].title;
                     audioDuration = msg.response[i].duration.toTime();
 
-                    $('#result > .list-group')
-                        .append('<li class="list-group-item"><span class="badge">' + audioDuration + '</span><span class="badge play" data-i18n="[title]clickToPlay"><span class="glyphicon glyphicon-play"></span></span><a class="iframe-download" data-i18n="[title]clickToDownload" target="_blank" data-src="' + (config.proxyMode ? streamUrl : msg.response[i].url) + '" href="' + downloadUrl + '">' + audioTitle + '</a></li>');
+                    audioView = {
+                        "clickToPlay": i18n.t("clickToPlay"),
+                        "clickToDownload": i18n.t("clickToDownload"),
+                        "duration": msg.response[i].duration.toTime(),
+                        "url": {
+                            "stream": config.proxyMode ? streamUrl : msg.response[i].url,
+                            "download": downloadUrl
+                        },
+                        "audio": msg.response[i].artist + ' - ' + msg.response[i].title
+                    };
+
+                    audioRendered = Mustache.render(audioTemplate, audioView);
+                    $('#result > .list-group').append(audioRendered);
                 };
-
-                $(".list-group").i18n();
-
-                $('.iframe-download').on('click', function(event) {
-                    event.preventDefault();
-                    url = $(this).attr('href');
-                    $("<iframe/>").attr({
-                        src: url,
-                        style: "visibility:hidden; display:none"
-                    }).appendTo($('body'));
-                });
 
                 //tracking search query
                 track('search', newQuery);
 
+                //set listeners
                 $('.play').on('click', function(event) {
                     play($(".list-group-item").index($(this).parent()));
                 });
+
+                //hide dat thing after all
                 $('#loading').hide();
             }
         });

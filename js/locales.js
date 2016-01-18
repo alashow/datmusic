@@ -1,17 +1,19 @@
 /* ========================================================================
- * Music v1.2.7
+ * Music v1.3.0
  * https://github.com/alashow/music
  * ======================================================================== */
  
 var locales = {
     en: {
         translation: {
+            "title": "datmusic",
             "searchPlaceholder": "Type search query",
             "shortcuts": "\"→\" Next track, \"←\" Previous track, \"Space\" Play/pause",
             "apkDownload": "Download app for android?",
+            "apkDownloadTitle": "download APK",
             "close": "Close",
             "error": "Error: __error__",
-            "networError": "Network error!",
+            "networkError": "Network error!",
             "tokenError": "Access token error!",
             "notFound": "Not found!",
             "clickToPlay": "Play audio",
@@ -39,12 +41,14 @@ var locales = {
     },
     ru: {
         translation: {
+            "title": "datmusic",
             "searchPlaceholder": "Поиск",
             "shortcuts": "\"→\" Следующий трек, \"← \" Предыдущая трек, \"Space\" Воспроизведение/пауза",
             "apkDownload": "Скачать приложение для Android?",
+            "apkDownloadTitle": "скачать APK",
             "close": "Закрыть",
             "error": "Ошибка: __error__",
-            "networError": "Ошибка сети",
+            "networkError": "Ошибка сети",
             "tokenError": "Ошибка в токене. Попробуйте заново.",
             "notFound": "Не найдено!",
             "clickToPlay": "Воспроизвести аудио",
@@ -72,12 +76,14 @@ var locales = {
     },
     tk: {
         translation: {
+            "title": "datmusic",
             "searchPlaceholder": "Gözleg sözüni ýazyň",
             "shortcuts": "\"→\" Indiki aýdym, \"←\" Öňki aýdym, \"Space\" Oýnat/duzzur",
             "apkDownload": "Android app indir?",
+            "apkDownloadTitle": "APK indir",
             "close": "Ýap",
             "error": "Ýalňyşlyk: __error__",
-            "networError": "Internet ýok öýdýän..",
+            "networkError": "Internet ýok öýdýän..",
             "tokenError": "Access token ýalňyş!",
             "notFound": "Beýle aýdym tapylmady",
             "clickToPlay": "Diňle",
