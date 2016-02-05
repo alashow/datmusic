@@ -12,6 +12,7 @@ include 'helper.php';
 
 $audioId = $_GET["audio_id"];
 $isStream = isset($_REQUEST["stream"]);
+$isDebug = isset($_REQUEST["debug"]);
 
 if (!isset($_GET["audio_id"]) && isset($_GET['id'])) {
   $audioId = split(":", $_GET['id']);
@@ -36,6 +37,11 @@ if (strlen($audioId) <= 1) {
 $audioGetUrl = "https://api.vk.com/method/audio.getById?audios=" . $audioId . "&access_token=" . $config["token"];
 
 $response = file_get_contents($audioGetUrl);
+
+if($isDebug){
+   die($response);
+}
+
 $json = json_decode($response, true);
 
 if (empty($json['response'])) {

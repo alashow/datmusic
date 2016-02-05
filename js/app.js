@@ -256,7 +256,7 @@ $(document).ready(function($) {
             data.performer_only = config.performerOnly == true ? 1 : 0;
         }
 
-        //php if url mode
+        //set api url to our php file if proxy mode enabled
         url = config.proxyMode ? config.appUrl + "search.php" : vkConfig.url;
         $.ajax({
             url: url,
