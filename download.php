@@ -1,6 +1,6 @@
 <?php
 /* ========================================================================
- * Music v1.2.8
+ * Music v1.2.9
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -34,7 +34,14 @@ if (strlen($audioId) <= 1) {
     notFound();
 }
 
-$audioGetUrl = "https://api.vk.com/method/audio.getById?audios=" . $audioId . "&access_token=" . $config["token"];
+$audioGetUrl = "https://api.vk.com/method/audio.getById?audios={$audioId}&access_token={$config['token']}";
+
+$captcha_sid = $_REQUEST["sid"];
+$captcha_key = $_REQUEST["key"];
+
+if (isset($captcha_sid) && isset($captcha_key)) {
+  $audioGetUrl .= "&captcha_sid={$captcha_sid}&captcha_key={$captcha_key}";
+}
 
 $response = file_get_contents($audioGetUrl);
 
@@ -45,7 +52,30 @@ if($isDebug){
 $json = json_decode($response, true);
 
 if (empty($json['response'])) {
-  notFound();
+  $error = $json['error'];
+
+  //notEmpty & isCaptcha
+  if (!empty($error) && intval($error["error_code"]) == 14) {
+    header('HTTP/1.0 404 Not Found');
+     ?>
+       <meta charset="utf-8">
+       <meta name="theme-color" content="#C0392B">
+       <style>body{background:#C0392B;margin:0}.center{margin:auto;width:20%;padding:10px;text-align:center}.center h1{color:white}.center img{width:100%}.center input{width:95%;padding:5px}</style>
+       <title><?=$error['error_msg']?></title>
+       <div class="center">
+         <h1><?=$error['error_msg']?></h1>
+         <img src="<?=$error['captcha_img']?>" alt="Captcha">
+         <form action="" method="POST">
+           <input type="hidden" name="sid" value="<?=$error['captcha_sid']?>"/>
+           <input type="text" name="key" placeholder="Type code above">
+           <button type="submit">Submit</button>
+         </form>
+       </div>
+     <?
+     exit();
+  } else {
+    notFound();
+  }
 }
 
 $audio = $json['response'][0];
