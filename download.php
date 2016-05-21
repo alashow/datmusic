@@ -64,7 +64,7 @@ if (empty($json['response'])) {
        <title><?=$error['error_msg']?></title>
        <div class="center">
          <h1><?=$error['error_msg']?></h1>
-         <img src="<?=$error['captcha_img']?>" alt="Captcha">
+         <img src="https://dotjpg.co/timthumb/thumb.php?w=300&src=<?=$error['captcha_img']?>" alt="Captcha">
          <form action="" method="POST">
            <input type="hidden" name="sid" value="<?=$error['captcha_sid']?>"/>
            <input type="text" name="key" placeholder="Type code above">
