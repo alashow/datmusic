@@ -1,15 +1,34 @@
 <?php
 /* ========================================================================
- * Music v1.2.7
+ * Music v1.2.9.5
  * https://github.com/alashow/music
  * ======================================================================== */
 //get your own if don't works https://github.com/alashow/music/wiki#how-to-get-your-own-token
 //add tokens to array, random one will be used.
 $config["tokens"] = array("fff9ef502df4bb10d9bf50dcd62170a24c69e98e4d847d9798d63dacf474b674f9a512b2b3f7e8ebf1d69");
-$config["token"] = $config["tokens"][array_rand($config["tokens"])];
 $config["dl_folder"] = "dl";
 $config["log_filename"] = "log";
 $config["not_found_file_path"] = "/home/alashov/web/.config/404.html";
+
+//fixed token index can be send from download.php, when user types captcha. to pass captcha, we need to give vk same token and with returned captcha, not random one. otherwise, user typed captcha code will be waste.
+$tokenIndex = intval($_REQUEST["tokenIndex"]);
+if (isset($_REQUEST["tokenIndex"])) {
+	setTokenByIndex($tokenIndex);
+} else { //if not fixed token, set random one.
+	setTokenByIndex(array_rand($config["tokens"]));
+}
+
+function setTokenByIndex($index){
+	global $config;
+	
+	$config["token"] = $config["tokens"][$index];
+}
+
+function getCurrentTokenIndex(){
+	global $config;
+
+	return array_search($config["token"], $config["tokens"]);
+}
 
 function writeLog($log) {
 	global $config;

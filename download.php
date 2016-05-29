@@ -1,6 +1,6 @@
 <?php
 /* ========================================================================
- * Music v1.2.9
+ * Music v1.2.9.5
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -66,6 +66,7 @@ if (empty($json['response'])) {
          <h1><?=$error['error_msg']?></h1>
          <img src="https://dotjpg.co/timthumb/thumb.php?w=300&src=<?=$error['captcha_img']?>" alt="Captcha">
          <form action="" method="POST">
+           <input type="hidden" name="tokenIndex" value="<?=getCurrentTokenIndex()?>"/>
            <input type="hidden" name="sid" value="<?=$error['captcha_sid']?>"/>
            <input type="text" name="key" placeholder="Type code above">
            <button type="submit">Submit</button>
