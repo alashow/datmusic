@@ -1,11 +1,13 @@
 <?php
 /* ========================================================================
- * Music v1.2.9.5
+ * Music v1.3.1
  * https://github.com/alashow/music
  * ======================================================================== */
-//get your own if don't works https://github.com/alashow/music/wiki#how-to-get-your-own-token
+//get your own if doesn't work: https://github.com/alashow/music/wiki#how-to-get-your-own-token
 //add tokens to array, random one will be used.
 $config["tokens"] = array("fff9ef502df4bb10d9bf50dcd62170a24c69e98e4d847d9798d63dacf474b674f9a512b2b3f7e8ebf1d69");
+$config["cache_enabled"] = true;
+$config["cache_folder"] = "cache";
 $config["dl_folder"] = "dl";
 $config["log_filename"] = "log";
 $config["not_found_file_path"] = "/home/alashov/web/.config/404.html";
@@ -51,6 +53,35 @@ function logStream($title) {
 function getTime() {
 	return date("F j, Y, g:i a");
 }
+
+function file_get_contents_with_cache($url){
+	global $config;
+
+	$cacheFile = getCacheFileForUrl($url);
+
+	if (file_exists($cacheFile) && $config["cache_enabled"]) {
+		$file = file_get_contents($cacheFile);
+	} else {
+		$file = file_get_contents($url);
+
+		//save if enabled
+		if ($config["cache_enabled"]) {
+			file_put_contents($cacheFile, $file, LOCK_EX);
+		}
+	}
+	return $file;
+}
+
+function removeCacheForUrl($url){
+	unlink(getCacheFileForUrl($url));
+}
+
+function getCacheFileForUrl($url){
+	global $config;
+
+	return $config["cache_folder"] . "/" . md5($url) . ".json";
+}
+
 /**
  * Function: sanitize
  * Returns a sanitized string, typically for URLs.

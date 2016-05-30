@@ -1,6 +1,6 @@
 <?php
 /* ========================================================================
- * Music v1.2.9.5
+ * Music v1.3.1
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -43,7 +43,7 @@ if (isset($captcha_sid) && isset($captcha_key)) {
   $audioGetUrl .= "&captcha_sid={$captcha_sid}&captcha_key={$captcha_key}";
 }
 
-$response = file_get_contents($audioGetUrl);
+$response = file_get_contents_with_cache($audioGetUrl);
 
 if($isDebug){
    die($response);
@@ -52,6 +52,8 @@ if($isDebug){
 $json = json_decode($response, true);
 
 if (empty($json['response'])) {
+  removeCacheForUrl($url);
+
   $error = $json['error'];
 
   //notEmpty & isCaptcha
@@ -120,6 +122,7 @@ function downloadFile($url, $path) {
   fclose($fp);
   
   if (curl_errno($ch) > 0) {
+    removeCacheForUrl($url);
     notFound();
     return false;
   }
