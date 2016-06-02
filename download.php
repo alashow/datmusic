@@ -133,12 +133,33 @@ function downloadFile($url, $path) {
 }
 
 /**
+ * VK sometimes redirects to error page, but curl downloads redirect page, which is html.
+ * check if downloaded file is html and throw 404
+ * if mp3 size smaller than 170 bytes (default/expected size is 158) check is html and exit with 404
+ */
+function checkIsBadMp3($filePath) {
+  $size = filesize($filePath);
+
+  if ($size < 170) {
+      $content = file_get_contents($filePath);
+
+      if (startsWith($content, "<html>")) {
+          unlink($filePath);
+          notFound();
+          return false;
+      }
+  }
+}
+
+/**
  * Return file as response
  * @param $filePath path of file to return
  * @param $fileName name of file to return
  */
 function forceDownload($filePath, $fileName) {
   logDownload("$filePath $fileName");
+
+  checkIsBadMp3($filePath);
 
   header("Cache-Control: private");
   header("Content-Description: File Transfer");
@@ -155,16 +176,18 @@ function forceDownload($filePath, $fileName) {
  * @param String $fileName name of audio for log
  * @return content
  */
-function stream($file, $fileName) {
-    logStream("$file $fileName");
+function stream($filePath, $fileName) {
+    logStream("$filePath $fileName");
+
+    checkIsBadMp3($filePath);
 
     @error_reporting(0);
     // Make sure the files exists, otherwise we are wasting our time
-    if (!file_exists($file)) {
+    if (!file_exists($filePath)) {
         notFound();
     }
 
     //just redirect to file
-    header("Location: $file");
+    header("Location: /$filePath");
 }
 ?>
