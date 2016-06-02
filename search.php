@@ -21,7 +21,7 @@ if (isset($params["callback"])) {
 
 $fullUrl = $apiUrl . http_build_query($params);
 
-$result = file_get_contents_with_cache($fullUrl);
+$result = file_get_contents_with_cache($fullUrl, true);
 
 if (!empty($result["error"])) {
   removeCacheForUrl($fullUrl);

@@ -54,13 +54,17 @@ function getTime() {
 	return date("F j, Y, g:i a");
 }
 
-function file_get_contents_with_cache($url){
+function file_get_contents_with_cache($url, $setLastModifiedHeader = false){
 	global $config;
 
 	$cacheFile = getCacheFileForUrl($url);
 
 	if (file_exists($cacheFile) && $config["cache_enabled"]) {
 		$file = file_get_contents($cacheFile);
+
+		if ($setLastModifiedHeader) {
+			header("Last-Modified: " . gmdate("D, d M Y H:i:s T", filemtime($cacheFile)));
+		}
 	} else {
 		$file = file_get_contents($url);
 
@@ -69,6 +73,7 @@ function file_get_contents_with_cache($url){
 			file_put_contents($cacheFile, $file, LOCK_EX);
 		}
 	}
+
 	return $file;
 }
 
