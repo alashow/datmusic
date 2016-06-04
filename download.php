@@ -52,7 +52,7 @@ if($isDebug){
 $json = json_decode($response, true);
 
 if (empty($json['response'])) {
-  removeCacheForUrl($url);
+  removeCacheForUrl($audioGetUrl);
 
   $error = $json['error'];
 
@@ -122,7 +122,9 @@ function downloadFile($url, $path) {
   fclose($fp);
   
   if (curl_errno($ch) > 0) {
-    removeCacheForUrl($url);
+    global $audioGetUrl;
+    
+    removeCacheForUrl($audioGetUrl);
     notFound();
     return false;
   }
