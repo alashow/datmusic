@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.3.5
+ * Music v1.3.6
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -350,6 +350,11 @@ $(document).ready(function($) {
                     $('#result > .list-group').append(audioRendered);
                 };
 
+                //set listeners
+                $('.play').on('click', function(event) {
+                    play($(".list-group-item").index($(this).parent()));
+                });
+
                 //tracking search query
                 track('search', newQuery);
 
@@ -362,11 +367,6 @@ $(document).ready(function($) {
     }
 
     function onListRendered() {
-        //set listeners
-        $('.play').on('click', function(event) {
-            play($(".list-group-item").index($(this).parent()));
-        });
-
         //showing fileSize and bitrate on dropdown shown
         $('.badge-download').on('shown.bs.dropdown', function() {
             dropdown = $(this);
@@ -378,7 +378,7 @@ $(document).ready(function($) {
             if (infoEl.text() == "...") { //if it's not shown yet
                 getFileSize(link, function(sizeInBytes) {
                     bitrate = parseInt(sizeInBytes / duration / 120);
-                    info = humanFileSize(sizeInBytes) + ", ~" + bitrate + " kbps";
+                    info = humanFileSize(sizeInBytes, true) + ", ~" + bitrate + " kbps";
                     infoEl.text(info);
                 });
             };
@@ -467,7 +467,7 @@ $(document).ready(function($) {
         };
 
         $("#jquery_jplayer_1").jPlayer("setMedia", {
-            mp3: $(el).parent().find('a').attr('data-src')
+            mp3: $(el).parent().find('a.name').attr('data-src')
         });
 
         //do magic
@@ -488,7 +488,7 @@ $(document).ready(function($) {
         $(el).find('.glyphicon').removeClass('glyphicon-play');
         $(el).find('.glyphicon').addClass('glyphicon-pause');
 
-        track('playAudio', $($('.list-group-item')[index]).find('a').html());
+        track('playAudio', $($('.list-group-item')[index]).find('a.name').html());
     }
 
     //Clear list and append given error

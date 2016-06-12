@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.3.1
+ * Music v1.3.5
  * https://github.com/alashow/music
  * ======================================================================== */
  
@@ -36,7 +36,8 @@ var locales = {
                     "byPopularity": "By popularity",
                     "byDate": "By date added"
                 }
-            }
+            },
+            "donate": "Donations are to keep server and service running"
         }
     },
     ru: {
@@ -71,7 +72,8 @@ var locales = {
                     "byPopularity": "По популярности",
                     "byDate": "По дате добавления"
                 }
-            }
+            },
+            "donate": "Пожертвования для того чтоб сервер и сервис продолжал работу"
         }
     },
     tk: {
@@ -106,7 +108,8 @@ var locales = {
                     "byPopularity": "Meşhurlygyna görä",
                     "byDate": "Aýdymyň goşulan wagtyna görä"
                 }
-            }
+            },
+            "donate": "Haýyr-sahawatlar serwerlary we saýtyň işiniň dowam etmegi üçin"
         }
     }
 };

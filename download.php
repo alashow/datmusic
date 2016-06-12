@@ -87,8 +87,6 @@ $audioUrl = $audio["url"];
 
 $bitrate = intval($_REQUEST["bitrate"]);
 
-$bitrateString = "";
-
 if (! in_array($bitrate, $config["allowed_bitrates"])) {
   $bitrate = -1;
 }
