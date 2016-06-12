@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.3.1
+ * Music v1.3.3
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -211,6 +211,19 @@ li.list-group-item a:hover {
 	display: none;
 	color: white;
 	background-color: #2c3e50;
+}
+
+.badge-download {
+	margin-right: 5px;
+}
+
+.badge-download .btn {
+	color: white;
+}
+
+.badge-download>.btn+.dropdown-toggle{
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 /*Animated Loading*/

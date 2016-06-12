@@ -1,6 +1,6 @@
 <?php
 /* ========================================================================
- * Music v1.3.1
+ * Music v1.3.3
  * https://github.com/alashow/music
  * ======================================================================== */
 //get your own if doesn't work: https://github.com/alashow/music/wiki#how-to-get-your-own-token
@@ -11,6 +11,10 @@ $config["cache_folder"] = "cache";
 $config["dl_folder"] = "dl";
 $config["log_filename"] = "log";
 $config["not_found_file_path"] = "/home/alashov/web/.config/404.html";
+
+//allowing popular bitrates only: economy, standart, good, and best
+$config["allowed_bitrates"] = array(64, 128, 192, 320);
+$config["allowed_bitrates_ffmpeg"] = array("-q:a 9", "-q:a 5", "-q:a 2", "-b:a 320k");
 
 //fixed token index can be send from download.php, when user types captcha. to pass captcha, we need to give vk same token and with returned captcha, not random one. otherwise, user typed captcha code will be waste.
 $tokenIndex = intval($_REQUEST["tokenIndex"]);

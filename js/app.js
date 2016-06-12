@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.3.1
+ * Music v1.3.3
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -200,7 +200,11 @@ $(document).ready(function($) {
         console.log(event);
     };
 
-    if (!searchFromQueryParam()) {
+    if (location.hash.length > 2) {
+        var decodedQuery = decodeURIComponent(escape(window.atob(location.hash.substring(1, location.hash.length))));
+        search(decodedQuery, null, null, true);
+        $('#query').val(decodedQuery);
+    } else if (!searchFromQueryParam()) {
         //Simulating search for demo of searching
         var artists = [
             "Agnes Obel", "Aloe Black", "Andrew Belle", "Angus Stone", "Arctic Monkeys",
@@ -328,7 +332,13 @@ $(document).ready(function($) {
                         "duration": msg.response[i].duration.toTime(),
                         "url": {
                             "stream": config.proxyMode ? streamUrl : msg.response[i].url,
-                            "download": downloadUrl
+                            "download": {
+                                "original": downloadUrl,
+                                "64":  downloadUrl + (config.prettyDownloadUrlMode ? "/64" : "&bitrate=64"), 
+                                "128": downloadUrl + (config.prettyDownloadUrlMode ? "/128" : "&bitrate=128"), 
+                                "192": downloadUrl + (config.prettyDownloadUrlMode ? "/192" : "&bitrate=192"), 
+                                "320": downloadUrl + (config.prettyDownloadUrlMode ? "/320" : "&bitrate=320") 
+                            }
                         },
                         "audio": msg.response[i].artist + ' - ' + msg.response[i].title
                     };

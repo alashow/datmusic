@@ -1,6 +1,6 @@
 <?php
 /* ========================================================================
- * Music v1.3.1
+ * Music v1.3.3
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -85,26 +85,51 @@ $audio = $json['response'][0];
 $fileName = $audio["artist"] . " - " . $audio["title"];
 $audioUrl = $audio["url"];
 
-$filePath = $config["dl_folder"] . "/" . md5($audioId) . ".mp3"; //caching mp3s, md5 for unique audioIds
+$bitrate = intval($_REQUEST["bitrate"]);
 
-if (file_exists($filePath)) {
+$bitrateString = "";
+
+if (! in_array($bitrate, $config["allowed_bitrates"])) {
+  $bitrate = -1;
+}
+
+$filePath = $config["dl_folder"] . "/" . md5($audioId) . ".mp3"; //caching mp3s, md5 for unique audioIds
+$filePathConverted = str_replace(".mp3", "_$bitrate.mp3", $filePath);
+
+if (file_exists($filePath) || downloadFile($audioUrl, $filePath)) {
+  if ($bitrate > 0) {
+    convertMp3Bitrate($bitrate, $filePath, $filePathConverted);
+    $filePath = $filePathConverted;
+  }
+
   if ($isStream) {
     stream($filePath, $fileName);
   } else {
     forceDownload($filePath, $fileName);
   }
   return;
-} else {
-  if (downloadFile($audioUrl, $filePath)) {
-    if ($isStream) {
-      stream($filePath, $fileName);
-    } else {
-      forceDownload($filePath, $fileName);
-    }
-  }
 }
 
 //Functions
+
+/**
+ * Executes ffmpeg command synchronously for converting given file to given bitrate
+ * @param $bitrate integer, one of $config["allowed_bitrates"]
+ * @param $input input mp3 file full path
+ * @param $output output mp3 file full path
+ */
+function convertMp3Bitrate($bitrate, $input, $output) {
+  global $config;
+
+  if (file_exists($output)) {
+      return;
+  }
+
+  $bitrateString = $config["allowed_bitrates_ffmpeg"][array_search($bitrate, $config["allowed_bitrates"])];
+
+  //FIXME: ffmpeg not always in path
+  exec("ffmpeg -i $input -codec:a libmp3lame $bitrateString $output");
+}
 
 /**
  * Download file with given name to given path
