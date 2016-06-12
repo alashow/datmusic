@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.3.3
+ * Music v1.3.5
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -19,12 +19,12 @@ $(document).ready(function($) {
     });
 
     $('#player').affix({
-            offset: {
-                top: 400,
-                bottom: function() {
-                    return (this.bottom = $('.footer').outerHeight(true))
-                }
+        offset: {
+            top: 400,
+            bottom: function() {
+                return (this.bottom = $('.footer').outerHeight(true))
             }
+        }
     });
 
     /* ========================================================================
@@ -67,14 +67,16 @@ $(document).ready(function($) {
 
     //render all tooltips
     $('[data-toggle="tooltip"]').tooltip();
-    
+
     //Parse audioTemplate
     var audioTemplate = $('#audioTemplate').html();
     Mustache.parse(audioTemplate);
 
     //Download apk if android
     if ($.cookie('showAndroidDownload') === undefined) {
-        $.cookie('showAndroidDownload', false, { expires: 2}); //show again after 2 days :)
+        $.cookie('showAndroidDownload', false, {
+            expires: 2
+        }); //show again after 2 days :)
         var ua = navigator.userAgent.toLowerCase();
         var isAndroid = ua.indexOf("android") > -1;
         if (isAndroid) {
@@ -183,13 +185,13 @@ $(document).ready(function($) {
     });
 
     //sync playing/paused status with audio element
-    $('.jp-play').click(function () {
+    $('.jp-play').click(function() {
         currentTrackEl = $($('.list-group-item')[config.currentTrack]).find('.play');
         $(el).find('.glyphicon').addClass('glyphicon-pause');
         $(el).find('.glyphicon').removeClass('glyphicon-play');
     });
 
-    $('.jp-pause').click(function () {
+    $('.jp-pause').click(function() {
         currentTrackEl = $($('.list-group-item')[config.currentTrack]).find('.play');
         $(el).find('.glyphicon').addClass('glyphicon-play');
         $(el).find('.glyphicon').removeClass('glyphicon-pause');
@@ -329,15 +331,16 @@ $(document).ready(function($) {
                     audioView = {
                         "clickToPlay": i18n.t("clickToPlay"),
                         "clickToDownload": i18n.t("clickToDownload"),
+                        "durationSeconds": msg.response[i].duration,
                         "duration": msg.response[i].duration.toTime(),
                         "url": {
                             "stream": config.proxyMode ? streamUrl : msg.response[i].url,
                             "download": {
                                 "original": downloadUrl,
-                                "64":  downloadUrl + (config.prettyDownloadUrlMode ? "/64" : "&bitrate=64"), 
-                                "128": downloadUrl + (config.prettyDownloadUrlMode ? "/128" : "&bitrate=128"), 
-                                "192": downloadUrl + (config.prettyDownloadUrlMode ? "/192" : "&bitrate=192"), 
-                                "320": downloadUrl + (config.prettyDownloadUrlMode ? "/320" : "&bitrate=320") 
+                                "64": downloadUrl + (config.prettyDownloadUrlMode ? "/64" : "&bitrate=64"),
+                                "128": downloadUrl + (config.prettyDownloadUrlMode ? "/128" : "&bitrate=128"),
+                                "192": downloadUrl + (config.prettyDownloadUrlMode ? "/192" : "&bitrate=192"),
+                                "320": downloadUrl + (config.prettyDownloadUrlMode ? "/320" : "&bitrate=320")
                             }
                         },
                         "audio": msg.response[i].artist + ' - ' + msg.response[i].title
@@ -350,13 +353,50 @@ $(document).ready(function($) {
                 //tracking search query
                 track('search', newQuery);
 
-                //set listeners
-                $('.play').on('click', function(event) {
-                    play($(".list-group-item").index($(this).parent()));
-                });
-
                 //hide dat thing after all
                 $('#loading').hide();
+
+                onListRendered();
+            }
+        });
+    }
+
+    function onListRendered() {
+        //set listeners
+        $('.play').on('click', function(event) {
+            play($(".list-group-item").index($(this).parent()));
+        });
+
+        //showing fileSize and bitrate on dropdown shown
+        $('.badge-download').on('shown.bs.dropdown', function() {
+            dropdown = $(this);
+            infoEl = $(dropdown.find('.info-link')[0]);
+
+            link = infoEl.attr('data-stream');
+            duration = parseInt($(infoEl).attr('data-duration'));
+
+            if (infoEl.text() == "...") { //if it's not shown yet
+                getFileSize(link, function(sizeInBytes) {
+                    bitrate = parseInt(sizeInBytes / duration / 120);
+                    info = humanFileSize(sizeInBytes) + ", ~" + bitrate + " kbps";
+                    infoEl.text(info);
+                });
+            };
+        });
+
+        $('.badge-download a').on('click', function() {
+            if ($(this).attr('href') != "#") {
+                if ($(this).hasClass('info-link')) {
+                    track("download", "bitrate = default")
+                } else {
+                    bitrate = $(this).text().replace(/[^\d.]/g, ''); //extracting integers, if any
+
+                    if (bitrate.length == 0) {
+                        track("download", "bitrate = default")
+                    } else {
+                        track("download", "bitrate = " + bitrate)
+                    }
+                }
             }
         });
     }
@@ -474,7 +514,7 @@ $(document).ready(function($) {
 
     //Showing captcha with given captcha id and image
     function showCaptcha(captchaSid, captchaImage) {
-        
+
         if (config.captchaProxy) {
             captchaImage = config.captchaProxyUrl + captchaImage;
         }
@@ -514,6 +554,28 @@ $(document).ready(function($) {
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
+    function getFileSize(url, callback) {
+        var request = new XMLHttpRequest();
+        //get only header.
+        request.open("HEAD", url, true);
+        request.onreadystatechange = function() {
+            if (this.readyState == this.DONE) {
+                callback(parseInt(request.getResponseHeader("Content-Length")));
+            }
+        };
+        request.send();
+    }
+
+    function track(type, value) {
+        try {
+            if (ga) {
+                ga('send', 'event', type, value);
+            };
+        } catch (e) {
+            console.error("outer", e.message);
+        }
+    }
+
     //Sec To Time
     Number.prototype.toTime = function() {
         var sec_num = parseInt(this, 10);
@@ -530,14 +592,19 @@ $(document).ready(function($) {
         return time;
     }
 
-    function track(type, value) {
-        try {
-            if (ga) {
-                ga('send', 'event', type, value);
-            };
-        } catch (e) {
-            console.error("outer", e.message);
+    //http://stackoverflow.com/a/14919494/2897341
+    function humanFileSize(bytes, si) {
+        var thresh = si ? 1000 : 1024;
+        if (Math.abs(bytes) < thresh) {
+            return bytes + ' B';
         }
+        var units = si ? ['kB', 'MB', 'GB'] : ['KiB', 'MiB', 'GiB'];
+        var u = -1;
+        do {
+            bytes /= thresh;
+            ++u;
+        } while (Math.abs(bytes) >= thresh && u < units.length - 1);
+        return bytes.toFixed(1) + ' ' + units[u];
     }
 
     // https://gist.github.com/alashow/07d9ef9c02ee697ab47d

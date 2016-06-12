@@ -1,6 +1,6 @@
 <?php
 /* ========================================================================
- * Music v1.3.3
+ * Music v1.3.5
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -119,7 +119,9 @@ if (file_exists($filePath) || downloadFile($audioUrl, $filePath)) {
  * @param $output output mp3 file full path
  */
 function convertMp3Bitrate($bitrate, $input, $output) {
-  global $config;
+  global $config, $fileName;
+
+  logConvert("$input $fileName $bitrate");
 
   if (file_exists($output)) {
       return;

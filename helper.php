@@ -1,6 +1,6 @@
 <?php
 /* ========================================================================
- * Music v1.3.3
+ * Music v1.3.5
  * https://github.com/alashow/music
  * ======================================================================== */
 //get your own if doesn't work: https://github.com/alashow/music/wiki#how-to-get-your-own-token
@@ -52,6 +52,10 @@ function logDownload($title) {
 
 function logStream($title) {
 	writeLog("Streaming, " . getTime() . ", " . $title);
+}
+
+function logConvert($title) {
+	writeLog("Convert, " . getTime() . ", " . $title);
 }
 
 function getTime() {
