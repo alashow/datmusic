@@ -1,6 +1,6 @@
 <?php
 /* ========================================================================
- * Music v1.3.5
+ * Music v1.3.7
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -13,6 +13,7 @@ include 'helper.php';
 $audioId = $_GET["audio_id"];
 $isStream = isset($_REQUEST["stream"]);
 $isDebug = isset($_REQUEST["debug"]);
+$isNoCache = isset($_REQUEST["nocache"]);
 
 if (!isset($_GET["audio_id"]) && isset($_GET['id'])) {
   $audioId = split(":", $_GET['id']);
@@ -43,8 +44,14 @@ if (isset($captcha_sid) && isset($captcha_key)) {
   $audioGetUrl .= "&captcha_sid={$captcha_sid}&captcha_key={$captcha_key}";
 }
 
+if ($isNoCache) {
+  removeCacheForUrl($audioGetUrl);
+}
+
+
 $response = file_get_contents_with_cache($audioGetUrl);
 
+//print response and die if debugging
 if($isDebug){
    die($response);
 }
@@ -52,6 +59,7 @@ if($isDebug){
 $json = json_decode($response, true);
 
 if (empty($json['response'])) {
+  //clear cache if no result in json
   removeCacheForUrl($audioGetUrl);
 
   $error = $json['error'];
@@ -91,21 +99,28 @@ if (! in_array($bitrate, $config["allowed_bitrates"])) {
   $bitrate = -1;
 }
 
-$filePath = $config["dl_folder"] . "/" . md5($audioId) . ".mp3"; //caching mp3s, md5 for unique audioIds
+//md5 hashing audioId for unique filenames in cache folder
+$filePath = $config["dl_folder"] . "/" . md5($audioId) . ".mp3";
+//converted name with bitrate suffix
 $filePathConverted = str_replace(".mp3", "_$bitrate.mp3", $filePath);
 
+//if file already exists, serve/stream it. if not, download it and then server/stream.
 if (file_exists($filePath) || downloadFile($audioUrl, $filePath)) {
   if ($bitrate > 0) {
-    convertMp3Bitrate($bitrate, $filePath, $filePathConverted);
-    $filePath = $filePathConverted;
+    //check cache for converted one, if no cache, convert it.
+    if (! file_exists($filePathConverted)) {
+      convertMp3Bitrate($bitrate, $filePath, $filePathConverted);
+    }
+    //change serving/streaming filePath to converted one.
+    $filePath = $filePathConverted; 
   }
 
+  //serve/stream
   if ($isStream) {
     stream($filePath, $fileName);
   } else {
     forceDownload($filePath, $fileName);
   }
-  return;
 }
 
 //Functions
@@ -120,10 +135,6 @@ function convertMp3Bitrate($bitrate, $input, $output) {
   global $config, $fileName;
 
   logConvert("$input $fileName $bitrate");
-
-  if (file_exists($output)) {
-      return;
-  }
 
   $bitrateString = $config["allowed_bitrates_ffmpeg"][array_search($bitrate, $config["allowed_bitrates"])];
 

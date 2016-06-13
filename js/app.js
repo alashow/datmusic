@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.3.6
+ * Music v1.3.7
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -32,9 +32,9 @@ $(document).ready(function($) {
      * ======================================================================== */
     // Default config for vk audio.search api
     var vkConfig = {
-        url: "https://api.vk.com/method/audio.search",
-        autoComplete: 1,
-        accessToken: "fff9ef502df4bb10d9bf50dcd62170a24c69e98e4d847d9798d63dacf474b674f9a512b2b3f7e8ebf1d69",
+        url: "https://api.vk.com/method/audio.search", /*base url*/
+        autoComplete: 1, /*to correct for mistakes in the search query (Beetles->Beatles)*/
+        accessToken: "fff9ef502df4bb10d9bf50dcd62170a24c69e98e4d847d9798d63dacf474b674f9a512b2b3f7e8ebf1d69", /*this token might not work*/
         count: 300 // 300 is limit of vk api
     };
 
@@ -46,9 +46,9 @@ $(document).ready(function($) {
         captchaProxy: true, //in some countries(for ex. in China, or Turkmenistan) vk is fully blocked, captcha images won't show.
         captchaProxyUrl: "https://dotjpg.co/timthumb/thumb.php?w=300&src=", //original captcha url will be appended
         prettyDownloadUrlMode: true, //converts http://datmusic.xyz/download.php?audio_id=16051160_137323200 to http://datmusic.xyz/JjGBD:AEnvc, see readme for rewriting regex
-        performerOnly: false,
-        sort: 2,
-        oldQuery: null,
+        performerOnly: false, /*default config for searching only by artist name*/
+        sort: 2, /*default sort mode (1 — by duration, 2 — by popularity, 0 — by date added)*/
+        oldQuery: null, /*for storing previous queries. Used to not search again with the same query*/
         defaultLang: "en",
         langCookie: "musicLang",
         sortCookie: "musicSort",
@@ -74,9 +74,12 @@ $(document).ready(function($) {
 
     //Download apk if android
     if ($.cookie('showAndroidDownload') === undefined) {
+        
+        //show again after 2 days :)
         $.cookie('showAndroidDownload', false, {
             expires: 2
-        }); //show again after 2 days :)
+        });
+
         var ua = navigator.userAgent.toLowerCase();
         var isAndroid = ua.indexOf("android") > -1;
         if (isAndroid) {
@@ -179,7 +182,7 @@ $(document).ready(function($) {
         },
         ended: function() {
             itemCount = $('.list-group-item').length;
-            console.log("#" + config.currentTrack + " ended, audio count in dom = " + itemCount);
+            console.log("#" + config.currentTrack + " ended, audios count in dom = " + itemCount);
             playNext();
         }
     });
@@ -209,22 +212,21 @@ $(document).ready(function($) {
     } else if (!searchFromQueryParam()) {
         //Simulating search for demo of searching
         var artists = [
-            "Agnes Obel", "Aloe Black", "Andrew Belle", "Angus Stone", "Arctic Monkeys",
-            "Avicii", "Balmorhea", "Barcelona", "Bastille", "Bastille", "Ben Howard",
-            "Benj Heard", "Birdy", "Broods", "Calvin Harris", "Charlotte OC", "City of The Sun",
-            "Clint Mansell", "Coldplay", "Daft Punk", "Damien Rice", "Daniela Andrade",
-            "Daughter", "David O'Dowda", "Dawn Golden", "Dirk Maassen", "Ed Sheeran",
-            "Fabrizio Paterlini", "Fink", "Fleurie", "Gem club", "Greg Haines", "Greg Maroney",
-            "Groen Land", "Hans Zimmer", "Hozier", "Jamie XX", "Jaymes Young", "Jessie J",
-            "Josef Salvat", "Julia Kent", "Kai Engel", "Keaton Henson", "Kina Grannis", "Kodaline",
-            "Kygo", "Kyle Landry", "Lana Del Rey", "Lera Lynn", "Lights & Motion", "Linus Young",
-            "Lo-Fang", "Lo-Fang", "Lorde", "Ludovico Einaudi", "M83", "MONO", "MS MR", "Macklemore",
-            "Mammals", "Maroon 5", "Martin Garrix", "Mattia Cupelli", "Max Richter", "Message To Bears",
-            "Mogwai", "Mumford & Sons", "Nils Frahm", "ODESZA", "Of Monsters and Men", "Oh Wonder",
-            "Philip Glass", "Phoebe Ryan", "Ryan Keen", "Sam Smith", "Seinabo Sey", "Sia",
-            "Takahiro Kido", "The xx", "Tom Odell", "VLNY", "Wye Oak", "X ambassadors",
-            "Yann Tiersen", "Yiruma", "Young Summer", "Zack Hemsey", "Zinovia", "deadmau5",
-            "pg.lost", "Ólafur Arnalds", "Нервы"
+           "2 Cellos", "Agnes Obel", "Aloe Black", "Andrew Belle", "Angus Stone", "Aquilo", "Arctic Monkeys",
+           "Avicii", "Balmorhea", "Barcelona", "Bastille", "Ben Howard", "Benj Heard", "Birdy", "Broods",
+           "Calvin Harris", "Charlotte OC", "City of The Sun", "Civil Twilight", "Clint Mansell", "Coldplay",
+           "Daft Punk", "Damien Rice", "Daniela Andrade", "Daughter", "David O'Dowda", "Dawn Golden", "Dirk Maassen",
+           "Ed Sheeran", "Eminem", "Fabrizio Paterlini", "Fink", "Fleurie", "Florence and The Machine", "Gem club",
+           "Glass Animals", "Greg Haines", "Greg Maroney", "Groen Land", "Halsey", "Hans Zimmer", "Hozier",
+           "Imagine Dragons", "Ingrid Michaelson", "Jamie XX", "Jarryd James", "Jasmin Thompson", "Jaymes Young",
+           "Jessie J", "Josef Salvat", "Julia Kent", "Kai Engel", "Keaton Henson", "Kendra Logozar", "Kina Grannis",
+           "Kodaline", "Kygo", "Kyle Landry", "Lana Del Rey", "Lera Lynn", "Lights & Motion", "Linus Young", "Lo-Fang",
+           "Lorde", "Ludovico Einaudi", "M83", "MONO", "MS MR", "Macklemore", "Mammals", "Maroon 5", "Martin Garrix",
+           "Mattia Cupelli", "Max Richter", "Message To Bears", "Mogwai", "Mumford & Sons", "Nils Frahm", "ODESZA", "Oasis",
+           "Of Monsters and Men", "Oh Wonder", "Philip Glass", "Phoebe Ryan", "Rachel Grimes", "Radiohead", "Ryan Keen",
+           "Sam Smith", "Seinabo Sey", "Sia", "Takahiro Kido", "The Irrepressibles", "The Neighbourhood", "The xx",
+           "Tom Odell", "VLNY", "Wye Oak", "X ambassadors", "Yann Tiersen", "Yiruma", "Young Summer", "Zack Hemsey",
+           "Zinovia", "deadmau5", "pg.lost", "Ólafur Arnalds", "Нервы"
         ]
 
         var demoArtist = artists[Math.floor(Math.random() * artists.length)];
@@ -232,9 +234,13 @@ $(document).ready(function($) {
         $('#query').val(demoArtist);
     }
 
+    //app.extra.js is for customizing site, without touching base js.
+    $.getScript("app.extra.js");
+
     //Main function for search
     function search(newQuery, captcha_sid, captcha_key, analytics, performer_only) {
-        config.currentTrack = -1;
+        config.currentTrack = -1; //reset current, so it won't play next song with wrong list
+
         if (newQuery.length > 1 && newQuery != config.oldQuery) {
             //change url with new query and page back support
             window.history.pushState(newQuery, $('title').html(), "?q=" + newQuery);
@@ -244,6 +250,7 @@ $(document).ready(function($) {
 
         config.oldQuery = newQuery;
 
+        //request params
         var data = {
             q: newQuery,
             sort: config.sort,
@@ -252,12 +259,13 @@ $(document).ready(function($) {
             count: vkConfig.count
         };
 
+        //add captcha params if available
         if (captcha_sid != null && captcha_key != null) {
             data.captcha_sid = captcha_sid;
             data.captcha_key = captcha_key;
         };
 
-        //search only by artist name
+        //search only by artist name.
         if (performer_only) {
             data.performer_only = 1;
         } else {
@@ -301,7 +309,7 @@ $(document).ready(function($) {
 
                 $('#result > .list-group').html(""); //clear list
 
-                //appending new items to list
+                //appending audio items to dom
                 for (var i = 1; i < msg.response.length; i++) {
                     downloadUrl = config.downloadServerUrl;
                     streamUrl = config.downloadServerUrl;
@@ -350,11 +358,6 @@ $(document).ready(function($) {
                     $('#result > .list-group').append(audioRendered);
                 };
 
-                //set listeners
-                $('.play').on('click', function(event) {
-                    play($(".list-group-item").index($(this).parent()));
-                });
-
                 //tracking search query
                 track('search', newQuery);
 
@@ -367,6 +370,11 @@ $(document).ready(function($) {
     }
 
     function onListRendered() {
+        //set listeners
+        $('.play').on('click', function(event) {
+            play($(".list-group-item").index($(this).parent()));
+        });
+
         //showing fileSize and bitrate on dropdown shown
         $('.badge-download').on('shown.bs.dropdown', function() {
             dropdown = $(this);
