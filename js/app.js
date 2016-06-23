@@ -42,8 +42,8 @@ $(document).ready(function($) {
         title: "datmusic", //will be changed after i18n init
         appUrl: window.location.protocol + "//datmusic.xyz/",
         downloadServerUrl: window.location.protocol + "//datmusic.xyz/", //change if download.php file located elsewhere
-        proxyMode: false, //when proxyMode enabled, search will performed through server (search.php), advantages of proxyMode are: private accessToken, less captchas. Disadvantages: preview of audio will be slower
-        proxyDownload: false, //enable to download with download.php, disable to download from vk. Note: doesn't work when config.proxyMode enabled.
+        proxyMode: true, //when proxyMode enabled, search will performed through server (search.php), advantages of proxyMode are: private accessToken, less captchas. Disadvantages: preview of audio will be slower
+        proxyDownload: true, //enable to download with download.php, disable to download from vk. Note: doesn't work when config.proxyMode enabled.
         captchaProxy: true, //in some countries(for ex. in China, or Turkmenistan) vk is fully blocked, captcha images won't show.
         captchaProxyUrl: "https://dotjpg.co/timthumb/thumb.php?w=300&src=", //original captcha url will be appended
         prettyDownloadUrlMode: true, //converts http://datmusic.xyz/download.php?audio_id=16051160_137323200 to http://datmusic.xyz/JjGBD:AEnvc, see readme for rewriting regex
