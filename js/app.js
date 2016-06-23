@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.3.7
+ * Music v1.3.9
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -42,7 +42,8 @@ $(document).ready(function($) {
         title: "datmusic", //will be changed after i18n init
         appUrl: window.location.protocol + "//datmusic.xyz/",
         downloadServerUrl: window.location.protocol + "//datmusic.xyz/", //change if download.php file located elsewhere
-        proxyMode: true, //when proxyMode enabled, search will performed through server (search.php), advantages of proxyMode are: private accessToken, less captchas. Disadvantages: preview of audio will be slower
+        proxyMode: false, //when proxyMode enabled, search will performed through server (search.php), advantages of proxyMode are: private accessToken, less captchas. Disadvantages: preview of audio will be slower
+        proxyDownload: false, //enable to download with download.php, disable to download from vk. Note: doesn't work when config.proxyMode enabled.
         captchaProxy: true, //in some countries(for ex. in China, or Turkmenistan) vk is fully blocked, captcha images won't show.
         captchaProxyUrl: "https://dotjpg.co/timthumb/thumb.php?w=300&src=", //original captcha url will be appended
         prettyDownloadUrlMode: true, //converts http://datmusic.xyz/download.php?audio_id=16051160_137323200 to http://datmusic.xyz/JjGBD:AEnvc, see readme for rewriting regex
@@ -344,7 +345,7 @@ $(document).ready(function($) {
                         "url": {
                             "stream": config.proxyMode ? streamUrl : msg.response[i].url,
                             "download": {
-                                "original": downloadUrl,
+                                "original": (!config.proxyMode && !config.proxyDownload) ? msg.response[i].url : downloadUrl, //if both proxyMode and proxyDownload mode is disabled, then give direct vk url. otherwise, php downloader one.
                                 "64": downloadUrl + (config.prettyDownloadUrlMode ? "/64" : "&bitrate=64"),
                                 "128": downloadUrl + (config.prettyDownloadUrlMode ? "/128" : "&bitrate=128"),
                                 "192": downloadUrl + (config.prettyDownloadUrlMode ? "/192" : "&bitrate=192"),
@@ -383,7 +384,9 @@ $(document).ready(function($) {
             link = infoEl.attr('data-stream');
             duration = parseInt($(infoEl).attr('data-duration'));
 
-            if (infoEl.text() == "...") { //if it's not shown yet
+            if (!config.proxyMode && !config.proxyDownload) { //if proxies are not enabled, we can't show fileSize and bitrate. So just Change dots/linkText to 'Download'
+                infoEl.text(i18n.t("clickToDownload"));
+            } else if (infoEl.text() == "...") { //if it's not shown yet
                 getFileSize(link, function(sizeInBytes) {
                     bitrate = parseInt(sizeInBytes / duration / 120);
                     info = humanFileSize(sizeInBytes, true) + ", ~" + bitrate + " kbps";
