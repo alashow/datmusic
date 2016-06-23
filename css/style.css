@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.3.7
+ * Music v1.4.0
  * https://github.com/alashow/music
  * ======================================================================== */
 html {
@@ -14,6 +14,13 @@ body {
 	font-weight: 400;
 	height: 100%;
 	padding-top: 65px;
+}
+
+/*no container padding on mobile*/
+@media (max-width:768px) {
+	.wrapper .container {
+		padding: 0px;
+	}
 }
 .wrapper {
 	min-height: 97%;
@@ -180,18 +187,28 @@ li.list-group-item a:hover {
 	border-top-right-radius: 4px;
 	border-bottom-right-radius: 4px;
 }
-.jp-audio .jp-current-time {
+.jp-audio .jp-details {
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
 	height: 100%;
 	padding: 0 12px;
-	font-size: 16px;
+	font-size: 14px;
 	line-height: 42px;
-	text-align: right;
 	pointer-events: none;
 	color: white;
+}
+.jp-audio .jp-current-time {
+	text-align: right;
+}
+.jp-audio .jp-current-name {
+	text-align: left;
+	float: left;
+	margin-right: 40px;
+	margin-left: -13px;	/*max 1 line*/
+	white-space: normal;
+	overflow: hidden;
 }
 .jp-audio .jp-no-solution {
 	position: absolute;

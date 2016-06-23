@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.3.9
+ * Music v1.4.0
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -185,20 +185,18 @@ $(document).ready(function($) {
             itemCount = $('.list-group-item').length;
             console.log("#" + config.currentTrack + " ended, audios count in dom = " + itemCount);
             playNext();
+        },
+        //sync playing/paused status with audio element
+        play: function(){
+            currentTrackEl = $($('.list-group-item')[config.currentTrack]).find('.play');
+            $(el).find('.glyphicon').addClass('glyphicon-pause');
+            $(el).find('.glyphicon').removeClass('glyphicon-play');
+        },
+        pause: function(){
+            currentTrackEl = $($('.list-group-item')[config.currentTrack]).find('.play');
+            $(el).find('.glyphicon').addClass('glyphicon-play');
+            $(el).find('.glyphicon').removeClass('glyphicon-pause');    
         }
-    });
-
-    //sync playing/paused status with audio element
-    $('.jp-play').click(function() {
-        currentTrackEl = $($('.list-group-item')[config.currentTrack]).find('.play');
-        $(el).find('.glyphicon').addClass('glyphicon-pause');
-        $(el).find('.glyphicon').removeClass('glyphicon-play');
-    });
-
-    $('.jp-pause').click(function() {
-        currentTrackEl = $($('.list-group-item')[config.currentTrack]).find('.play');
-        $(el).find('.glyphicon').addClass('glyphicon-play');
-        $(el).find('.glyphicon').removeClass('glyphicon-pause');
     });
 
     window.onpopstate = function(event) {
@@ -480,6 +478,9 @@ $(document).ready(function($) {
         $("#jquery_jplayer_1").jPlayer("setMedia", {
             mp3: $(el).parent().find('a.name').attr('data-src')
         });
+
+        //set text of current audio to player
+        $('.jp-audio .jp-current-name').text($(el).parent().find('a.name').text());
 
         //do magic
         $("#jquery_jplayer_1").jPlayer("play");
