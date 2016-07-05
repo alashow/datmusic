@@ -1,6 +1,6 @@
 <?php
 /* ========================================================================
- * Music v1.3.7
+ * Music v1.4.0
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -12,8 +12,6 @@ include 'helper.php';
 
 $audioId = $_GET["audio_id"];
 $isStream = isset($_REQUEST["stream"]);
-$isDebug = isset($_REQUEST["debug"]);
-$isNoCache = isset($_REQUEST["nocache"]);
 
 if (!isset($_GET["audio_id"]) && isset($_GET['id'])) {
   $audioId = split(":", $_GET['id']);
@@ -44,7 +42,7 @@ if (isset($captcha_sid) && isset($captcha_key)) {
   $audioGetUrl .= "&captcha_sid={$captcha_sid}&captcha_key={$captcha_key}";
 }
 
-if ($isNoCache) {
+if ($config["isNoCache"]) {
   removeCacheForUrl($audioGetUrl);
 }
 
@@ -52,7 +50,7 @@ if ($isNoCache) {
 $response = file_get_contents_with_cache($audioGetUrl);
 
 //print response and die if debugging
-if($isDebug){
+if($config["isDebug"]){
    die($response);
 }
 

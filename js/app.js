@@ -45,7 +45,7 @@ $(document).ready(function($) {
         proxyMode: true, //when proxyMode enabled, search will performed through server (search.php), advantages of proxyMode are: private accessToken, less captchas. Disadvantages: preview of audio will be slower
         proxyDownload: true, //enable to download with download.php, disable to download from vk. Note: doesn't work when config.proxyMode enabled.
         captchaProxy: true, //in some countries(for ex. in China, or Turkmenistan) vk is fully blocked, captcha images won't show.
-        captchaProxyUrl: "https://dotjpg.co/timthumb/thumb.php?w=300&src=", //original captcha url will be appended
+        captchaProxyUrl: "https://dotjpg.co/timthumb/thumb.php?w=200&src=", //original captcha url will be appended
         prettyDownloadUrlMode: true, //converts http://datmusic.xyz/download.php?audio_id=16051160_137323200 to http://datmusic.xyz/JjGBD:AEnvc, see readme for rewriting regex
         performerOnly: false, /*default config for searching only by artist name*/
         sort: 2, /*default sort mode (1 — by duration, 2 — by popularity, 0 — by date added)*/
@@ -234,7 +234,7 @@ $(document).ready(function($) {
     }
 
     //app.extra.js is for customizing site, without touching base js.
-    $.getScript("app.extra.js");
+    $.getScript("js/app.extra.js");
 
     //Main function for search
     function search(newQuery, captcha_sid, captcha_key, analytics, performer_only) {

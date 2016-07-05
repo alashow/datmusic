@@ -1,6 +1,6 @@
 <?php 
 /* ========================================================================
- * Music v1.3.7
+ * Music v1.4.0
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -21,10 +21,17 @@ if (isset($params["callback"])) {
 
 $fullUrl = $apiUrl . http_build_query($params);
 
+if ($config['isNoCache']) {
+    removeCacheForUrl($fullUrl);
+}
+
 $result = file_get_contents_with_cache($fullUrl, true);
 
-if (!empty($result["error"])) {
-  removeCacheForUrl($fullUrl);
+$resultJson = json_decode(preg_replace('/.+?({.+}).+/', "$1", $result), true);
+
+//if response has errors or has no response
+if (! empty($resultJson["error"]) || empty($resultJson["response"])) {
+  	removeCacheForUrl($fullUrl);
 }
 
 if (isset($originalJsonCallback)) {

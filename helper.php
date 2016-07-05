@@ -12,6 +12,9 @@ $config["dl_folder"] = "dl";
 $config["log_filename"] = "log";
 $config["not_found_file_path"] = "/home/alashov/web/.config/404.html";
 
+$config["isDebug"] = isset($_REQUEST["debug"]);
+$config["isNoCache"] = isset($_REQUEST["nocache"]);
+
 //allowing popular bitrates only: economy, standart, good, and best
 $config["allowed_bitrates"] = array(64, 128, 192, 320);
 $config["allowed_bitrates_ffmpeg"] = array("-q:a 9", "-q:a 5", "-q:a 2", "-b:a 320k");
