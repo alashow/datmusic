@@ -1,8 +1,8 @@
 /* ========================================================================
- * Music v1.3.7
+ * Music v1.4.1
  * https://github.com/alashow/music
  * ======================================================================== */
- 
+
 var locales = {
     en: {
         translation: {
@@ -24,12 +24,7 @@ var locales = {
             "settings": {
                 "title": "Settings",
                 "performerOnly": "Search only by artist name",
-                "language": {
-                    "title": "Language",
-                    "en": "English",
-                    "ru": "Russian",
-                    "tk": "Turkmen"
-                },
+                "language": "Language",
                 "sort": {
                     "title": "Sort",
                     "byDuration": "By duration",
@@ -60,12 +55,7 @@ var locales = {
             "settings": {
                 "title": "Настройки",
                 "performerOnly": "Поиск только по имени исполнителя",
-                "language": {
-                    "title": "Язык",
-                    "en": "Английский",
-                    "ru": "Русский",
-                    "tk": "Туркменский"
-                },
+                "language": "Язык",
                 "sort": {
                     "title": "Вид сортировки",
                     "byDuration": "По длительности аудиозаписи",
@@ -96,12 +86,7 @@ var locales = {
             "settings": {
                 "title": "Gurnamalar",
                 "performerOnly": "Diňe aýdymçynyň ady boyunça gözle",
-                "language": {
-                    "title": "Dil",
-                    "en": "Iňlisçe",
-                    "ru": "Rusça",
-                    "tk": "Türkmençe"
-                },
+                "language": "Dil",
                 "sort": {
                     "title": "Tertip",
                     "byDuration": "Uzynlygyna görä",
@@ -111,5 +96,129 @@ var locales = {
             },
             "donate": "Haýyr-sahawatlar serwerlary we saýtyň işiniň dowam etmegi üçin"
         }
-    }
+    },
+    de: {
+        translation: {
+            "title": "datmusic",
+            "searchPlaceholder": "Suchbegriff eingeben",
+            "shortcuts": "\"→\" Nächster Titel, \"←\" Vorheriger Titel, \"Space\" Wiedergabe/Pause",
+            "apkDownload": "App für Android herunterladen?",
+            "apkDownloadTitle": "APK herunterladen",
+            "close": "Schließen",
+            "error": "Fehler: __error__",
+            "networkError": "Netzwerkfehler!",
+            "tokenError": "Zugriffstoken-Fehler!",
+            "notFound": "Nicht gefunden!",
+            "clickToPlay": "Audiowiedergabe",
+            "clickToDownload": "Herunterladen",
+            "captcha": {
+                "send": "Senden",
+            },
+            "settings": {
+                "title": "Einstellungen",
+                "performerOnly": "Nur nach Künstlernamen suchen",
+                "language": "Sprache",
+                "sort": {
+                    "title": "Sortieren",
+                    "byDuration": "Nach Dauer",
+                    "byPopularity": "Nach Beliebtheit",
+                    "byDate": "Nach Hinzufügedatum"
+                }
+            },
+            "donate": "Spenden dienen dazu, den Server und den Dienst am Laufen zu halten"
+        }
+    },
+    es: {
+        translation: {
+            "title": "datmusic",
+            "searchPlaceholder": "Tipo de consulta de búsqueda",
+            "shortcuts": "\"→\" Pista siguiente, \"← \" Pista anterior, \“Espacio\" Reproducir/pausa",
+            "apkDownload": "¿Descargar la aplicación para Android?",
+            "apkDownloadTitle": "Descargar APK",
+            "close": "Cerrar",
+            "error": "Error: __error__",
+            "networkError": "¡Error de red!",
+            "tokenError": "¡Error de licencia de acceso!",
+            "notFound": "¡No encontrado!",
+            "clickToPlay": "Reproducción de audio",
+            "clickToDownload": "Descargar",
+            "captcha": {
+                "send": "Enviar",
+            },
+            "settings": {
+                "title": "Ajustes",
+                "performerOnly": "Buscar solo por nombre de artista",
+                "language": "Idioma",
+                "sort": {
+                    "title": "Ordenar",
+                    "byDuration": "Por duración",
+                    "byPopularity": "Por fecha",
+                    "byDate": "byDate"
+                }
+            },
+            "donate": "Las donaciones son para mantener el servidor y el servicio en ejecución"
+        }
+    },
+    it: {
+        translation: {
+            "title": "datmusic",
+            "searchPlaceholder": "Tipo cerca interrogazione",
+            "shortcuts": "\"→\" Prossima traccia, \"←\" Traccia precedente, \"Spazio\" Riproduci/metti in pausa",
+            "apkDownload": "Scarica app per android?",
+            "apkDownloadTitle": "Scarica APK",
+            "close": "Chiudi",
+            "error": "Errore: __error__",
+            "networkError": "Errore di rete!",
+            "tokenError": "Accedi al token dell'errore!",
+            "notFound": "Non trovato!",
+            "clickToPlay": "Riproduci audio",
+            "clickToDownload": "Riproduci audio",
+            "captcha": {
+                "send": "Invia",
+            },
+            "settings": {
+                "title": "Impostazioni",
+                "performerOnly": "Cerca solo per nome dell'artista",
+                "language": "Lingua",
+                "sort": {
+                    "title": "Ordina",
+                    "byDuration": "Per durata",
+                    "byPopularity": "Per durata",
+                    "byDate": "Per data di aggiunta"
+                }
+            },
+            "donate": "Le donazioni servono per mantenere il funzionamento del server e del servizio"
+        }
+    },
+    tr: {
+        translation: {
+            "title": "datmusic",
+            "searchPlaceholder": "Arama sorgusunu yazın",
+            "shortcuts": "\"→\" Sonraki parça, \"←\" Önceki parça, \"Boşluk\" Oynat/duraksat",
+            "apkDownload": "Android uygulamasını indir?",
+            "apkDownloadTitle": "APK'yı indirin",
+            "close": "Kapat",
+            "error": "Hata: __error__",
+            "networkError": "Ağ hatası!",
+            "tokenError": "Erişim dizgeciği hatası!",
+            "notFound": "Bulunamadı!",
+            "clickToPlay": "Ses dosyasını çal",
+            "clickToDownload": "İndir",
+            "captcha": {
+                "send": "Gönder",
+            },
+            "settings": {
+                "title": "Ayarlar",
+                "performerOnly": "Sadece sanatçı adına göre ara",
+                "language": "Dil",
+                "sort": {
+                    "title": "Sırala",
+                    "byDuration": "Süreye göre",
+                    "byPopularity": "Popülerliğe göre",
+                    "byDate": "Eklenen tarihe göre"
+                }
+            },
+            "donate": "Bağışlar sunucuyu ve hizmeti sürdürmek içindir"
+        }
+    },
 };
