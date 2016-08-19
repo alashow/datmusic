@@ -221,4 +221,35 @@ var locales = {
             "donate": "Bağışlar sunucuyu ve hizmeti sürdürmek içindir"
         }
     },
+    fr: {
+        translation: {
+            "title": "datmusic",
+            "searchPlaceholder": "Effectuez votre recherche",
+            "shortcuts": "\"→\" Titre suivant, \"←\" Titre précédent, \"Space\" Lecture/Pause",
+            "apkDownload": "Télécharger l'application pour android?",
+            "apkDownloadTitle": "télécharger l'APK",
+            "close": "Fermer",
+            "error": "Erreur: __error__",
+            "networkError": "Erreur réseau !",
+            "tokenError": "Erreur token d'accès !",
+            "notFound": "Aucun résultat !",
+            "clickToPlay": "Jouer le titre",
+            "clickToDownload": "Télécharger",
+            "captcha": {
+                "send": "Envoyer",
+            },
+            "settings": {
+                "title": "Paramètres",
+                "performerOnly": "Ne chercher que par nom d'artiste",
+                "language": "Langage",
+                "sort": {
+                    "title": "Tri",
+                    "byDuration": "Par durée",
+                    "byPopularity": "Par popularité",
+                    "byDate": "Par date d'ajout"
+                }
+            },
+            "donate": "Les donations servent à maintenir le serveur"
+        }
+    }
 };
