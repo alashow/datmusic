@@ -3,6 +3,18 @@ Music
 
 Search and Download free music from VK. Using VK [audio search api](https://vk.com/dev/audio.search).
 
+## Demo
+[datmusic](https://datmusic.xyz)
+![Demo Screenshot](https://dotjpg.co/XfNk.png)
+
+[Usage wiki](https://github.com/alashow/music/wiki)
+
+## Android Version repo
+[Android Version repo](https://github.com/alashow/music-android)
+
+## Telegram Bot repo
+[Telegram Bot repo](https://github.com/alashow/datmusicbot)
+
 ## Code
 
 Currently code is divided to two parts: 
@@ -28,16 +40,6 @@ Currently code is divided to two parts:
 		- Uses private token set in php config.
 		- Redirects all given input queries to VK APi.
 		- Caches results as json files. Need to purge cache manually too, as mp3's. I suggest to purge them in 1-2 days, because vk changes links to mp3 files for somereason :) (for security reasons I guess, downloads won't work if you don't clear cache).
-
-## Demo
-[datmusic](https://datmusic.xyz)
-![Demo Screenshot](https://dotjpg.co/XfNk.png)
-
-[Usage wiki](https://github.com/alashow/music/wiki)
-
-## Android Version repo
-[Android Version repo](https://github.com/alashow/music-android)
-
 
 # License
 MIT - Alashov Berkeli
