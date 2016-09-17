@@ -87,7 +87,7 @@ $(document).ready(function($) {
             var r = confirm(i18n.t("apkDownload"));
             if (r == true) {
                 track('android', "confirm");
-                var win = window.open("https://bitly.com/M-APK", '_blank');
+                var win = window.open("https://play.google.com/store/apps/details?id=tm.alashow.datmusic", '_blank');
                 win.focus();
             } else {
                 track('android', "deny");
@@ -590,18 +590,9 @@ $(document).ready(function($) {
 
     //Sec To Time
     Number.prototype.toTime = function() {
-        var sec_num = parseInt(this, 10);
-        var hours = Math.floor(sec_num / 3600);
-        var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-        var seconds = sec_num - (hours * 3600) - (minutes * 60);
-        if (minutes < 10) {
-            minutes = "0" + minutes;
-        }
-        if (seconds < 10) {
-            seconds = "0" + seconds;
-        }
-        var time = minutes + ':' + seconds;
-        return time;
+        var s = parseInt(this, 10);
+        //some dark magic thing happens here
+        return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
     }
 
     //http://stackoverflow.com/a/14919494/2897341
