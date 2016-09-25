@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.4.2
+ * Music v1.4.5
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -224,8 +224,8 @@ $(document).ready(function($) {
            "Mattia Cupelli", "Max Richter", "Message To Bears", "Mogwai", "Mumford & Sons", "Nils Frahm", "ODESZA", "Oasis",
            "Of Monsters and Men", "Oh Wonder", "Philip Glass", "Phoebe Ryan", "Rachel Grimes", "Radiohead", "Ryan Keen",
            "Sam Smith", "Seinabo Sey", "Sia", "Takahiro Kido", "The Irrepressibles", "The Neighbourhood", "The xx",
-           "Tom Odell", "VLNY", "Wye Oak", "X ambassadors", "Yann Tiersen", "Yiruma", "Young Summer", "Zack Hemsey",
-           "Zinovia", "deadmau5", "pg.lost", "Ólafur Arnalds", "Нервы"
+           "VLNY", "Wye Oak", "X ambassadors", "Yann Tiersen", "Yiruma", "Young Summer", "Zack Hemsey", "Zinovia",
+           "deadmau5", "pg.lost", "Ólafur Arnalds"
         ]
 
         var demoArtist = artists[Math.floor(Math.random() * artists.length)];
@@ -380,15 +380,31 @@ $(document).ready(function($) {
             infoEl = $(dropdown.find('.info-link')[0]);
 
             link = infoEl.attr('data-stream');
+            downloadUrl = infoEl.attr('href');
             duration = parseInt($(infoEl).attr('data-duration'));
 
             if (!config.proxyMode && !config.proxyDownload) { //if proxies are not enabled, we can't show fileSize and bitrate. So just Change dots/linkText to 'Download'
                 infoEl.text(i18n.t("clickToDownload"));
             } else if (infoEl.text() == "...") { //if it's not shown yet
-                getFileSize(link, function(sizeInBytes) {
-                    bitrate = parseInt(sizeInBytes / duration / 120);
+                getFileSize(downloadUrl, function(sizeInBytes) {
+                    bitrate = parseInt(sizeInBytes * 8 / duration / 1000);
                     info = humanFileSize(sizeInBytes, true) + ", ~" + bitrate + " kbps";
                     infoEl.text(info);
+
+                    allowedBitrateClasses = {64: "bitrate-64", 128: "bitrate-128", 192: "bitrate-192", 320: "bitrate-320"};
+
+                    //remove bitrate convertation link from list if allowedBitrate equal or greater than original bitrate
+                    //otherwise, add calculated size of bitrate to list 
+                    for (var allowedBitrate in allowedBitrateClasses) {
+                        bitrateEl = dropdown.find('.' + allowedBitrateClasses[allowedBitrate]);
+                        if (allowedBitrate >= bitrate) {
+                            bitrateEl.remove();
+                        } else {
+                            bytes = allowedBitrate / 8 * duration * 1000;
+                            bitrateEl.text(bitrateEl.text() + ", ~" + humanFileSize(bytes, true));
+                        };
+                    };
+
                 });
             };
         });
@@ -567,15 +583,20 @@ $(document).ready(function($) {
     }
 
     function getFileSize(url, callback) {
-        var request = new XMLHttpRequest();
-        //get only header.
-        request.open("HEAD", url, true);
-        request.onreadystatechange = function() {
-            if (this.readyState == this.DONE) {
-                callback(parseInt(request.getResponseHeader("Content-Length")));
-            }
-        };
-        request.send();
+        url += "?getBytes";
+        $.get(url, function(data) {
+            callback(parseInt(data));
+        });
+
+        // var request = new XMLHttpRequest();
+        // //get only header.
+        // request.open("HEAD", url, true);
+        // request.onreadystatechange = function() {
+        //     if (this.readyState == this.DONE) {
+        //         callback(parseInt(request.getResponseHeader("Content-Length")));
+        //     }
+        // };
+        // request.send();
     }
 
     function track(type, value) {

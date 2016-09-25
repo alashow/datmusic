@@ -1,6 +1,6 @@
 <?php
 /* ========================================================================
- * Music v1.4.2
+ * Music v1.4.5
  * https://github.com/alashow/music
  * ======================================================================== */
 //get your own if doesn't work: https://github.com/alashow/music/wiki#how-to-get-your-own-token

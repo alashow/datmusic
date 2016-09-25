@@ -1,6 +1,6 @@
 <?php
 /* ========================================================================
- * Music v1.4.2
+ * Music v1.4.5
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -12,6 +12,8 @@ include 'helper.php';
 
 $audioId = $_GET["audio_id"];
 $isStream = isset($_REQUEST["stream"]);
+$isGetHeaders = isset($_REQUEST["getHeaders"]);
+$isGetBytes = isset($_REQUEST["getBytes"]);
 
 if (!isset($_GET["audio_id"]) && isset($_GET['id'])) {
   $audioId = split(":", $_GET['id']);
@@ -90,6 +92,25 @@ if (empty($json['response'])) {
 $audio = $json['response'][0];
 $fileName = $audio["artist"] . " - " . $audio["title"];
 $audioUrl = $audio["url"];
+
+//if getHeaders or getBytes flag set
+if ($isGetHeaders || $isGetBytes) {
+  //request with head
+  stream_context_set_default(
+    array(
+        'http' => array(
+            'method' => 'HEAD'
+        )
+    )
+  );
+
+  //get only headers of url
+  $headers = get_headers($audioUrl, 1);
+
+  //print all headers as json or just print conten-length (bytes)
+  echo $isGetHeaders ? json_encode($headers) : $headers["Content-Length"];
+  return;
+}
 
 $bitrate = intval($_REQUEST["bitrate"]);
 

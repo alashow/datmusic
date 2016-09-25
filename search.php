@@ -1,6 +1,6 @@
 <?php 
 /* ========================================================================
- * Music v1.4.2
+ * Music v1.4.5
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -11,12 +11,12 @@ $apiUrl = "https://api.vk.com/method/audio.search?";
 $params = $_GET;
 $params["access_token"] = $config["token"]; //for private access token. if public, comment this line so access token from js will be used
 
-//doing some magic here. read about Jquery.Ajax callback here http://stackoverflow.com/questions/12864096/can-i-make-a-jquery-jsonp-request-without-adding-the-callback-parameter-in-u
+//doing some magic here. read about Jquery.Ajax callback here http://stackoverflow.com/questions/12864096/
 //web app client sends unique callback string for each call. it's not good for our json caching (because it's based on md5 of url)
 //solution: save original callback string, replace with unique string in url, replace saved one with original in response.
 if (isset($params["callback"])) {	
 	$originalJsonCallback = $params["callback"];
-	$params["callback"] = "63kfn61Ikx90Nw"; //just an unique random string
+	$params["callback"] = "63kfn61Ikx90Nw"; //just a unique random string
 }
 
 $fullUrl = $apiUrl . http_build_query($params);
@@ -27,7 +27,11 @@ if ($config['isNoCache']) {
 
 $result = file_get_contents_with_cache($fullUrl, true);
 
-$resultJson = json_decode(preg_replace('/.+?({.+}).+/', "$1", $result), true);
+if (isset($originalJsonCallback)) {
+	$resultJson = json_decode(preg_replace('/.+?({.+}).+/', "$1", $result), true);
+} else {
+	$resultJson = json_decode($result, true);
+}
 
 //if response has errors or has no response
 if (! empty($resultJson["error"]) || empty($resultJson["response"])) {
@@ -37,6 +41,11 @@ if (! empty($resultJson["error"]) || empty($resultJson["response"])) {
 if (isset($originalJsonCallback)) {
 	//replacing callback string back
 	$result = str_replace($params["callback"], $originalJsonCallback, $result);
+}
+
+if (isset($_REQUEST["noCount"])) {
+	$result = preg_replace('/\{\"response\"\:\[([0-9]{1,20}),\{/', '{"response":[{', $result);
+	$result = preg_replace('/\{\"response\"\:\[([0-9]{1,20})\]\}/', '{"response":[]}', $result);
 }
 
 //hehe https://datmusic.xyz/stream/YGexC:AEYtr
