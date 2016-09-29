@@ -5,7 +5,7 @@
  * ======================================================================== */
 
 include 'helper.php';
-logSearch($_GET['q']);
+logSearch($_GET["q"]);
 
 $apiUrl = "https://api.vk.com/method/audio.search?";
 $params = $_GET;
@@ -21,7 +21,7 @@ if (isset($params["callback"])) {
 
 $fullUrl = $apiUrl . http_build_query($params);
 
-if ($config['isNoCache']) {
+if ($config["isNoCache"]) {
     removeCacheForUrl($fullUrl);
 }
 
@@ -36,6 +36,8 @@ if (isset($originalJsonCallback)) {
 //if response has errors or has no response
 if (! empty($resultJson["error"]) || empty($resultJson["response"])) {
   	removeCacheForUrl($fullUrl);
+} else {
+	logSuccessQuery($_GET["q"]);
 }
 
 if (isset($originalJsonCallback)) {

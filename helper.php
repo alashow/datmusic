@@ -9,7 +9,8 @@ $config["tokens"] = array("fff9ef502df4bb10d9bf50dcd62170a24c69e98e4d847d9798d63
 $config["cache_enabled"] = true;
 $config["cache_folder"] = "cache";
 $config["dl_folder"] = "dl";
-$config["log_filename"] = "log";
+$config["log_filename"] = "logs/mainLog.txt";
+$config["success_queryLog_filename"] = "logs/successQuery.txt";
 $config["not_found_file_path"] = "/home/alashov/web/.config/404.html";
 
 $config["isDebug"] = isset($_REQUEST["debug"]);
@@ -65,6 +66,12 @@ function logConvert($title) {
 
 function getTime() {
 	return date("F j, Y, g:i a");
+}
+
+function logSuccessQuery($query){
+	global $config;
+	
+	file_put_contents($config["success_queryLog_filename"], $query . "\n", FILE_APPEND);
 }
 
 // end log helpers
