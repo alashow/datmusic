@@ -5,7 +5,7 @@ Search and Download free music from VK. Using VK [audio search api](https://vk.c
 
 ## Demo
 [datmusic](https://datmusic.xyz)
-![Demo Screenshot](https://dotjpg.co/XfNk.png)
+![Demo Screenshot](https://i.imgur.com/LuT7F86.png)
 
 [Usage wiki](https://github.com/alashow/music/wiki)
 

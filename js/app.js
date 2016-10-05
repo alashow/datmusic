@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.4.5
+ * Music v1.4.6
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -318,13 +318,7 @@ $(document).ready(function($) {
                     //little hard code :)
                     if (config.prettyDownloadUrlMode) {
                         streamUrl += "stream/";
-                        //vk ownerId for groups is negative number, shit. invers it.
-                        if (ownerId < 0) {
-                            ownerId *= -1;
-                            downloadUrl += "-";
-                            streamUrl += "-";
-                        }
-                        prettyId = encode(ownerId) + ":" + encode(aid)
+                        prettyId = encode(ownerId) + ":" + encode(aid);
                         downloadUrl += prettyId;
                         streamUrl += prettyId;
                     } else {
@@ -645,6 +639,11 @@ $(document).ready(function($) {
 
         if (input == 0)
             return map[0];
+
+        if (input < 0) {
+            input *= -1;
+            encoded += "-";
+        };
 
         while (input > 0) {
             val = parseInt(input % length);
