@@ -35,6 +35,37 @@ var locales = {
             "donate": "Donations are to keep server and service running"
         }
     },
+    pt: {
+        translation: {
+            "title": "datmusic",
+            "searchPlaceholder": "Digite os parâmetros de busca",
+            "shortcuts": "\"→\" Próxima música, \"←\" Música anterior, \"Espaço\" Tocar/pausar",
+            "apkDownload": "Download do app para android?",
+            "apkDownloadTitle": "download APK",
+            "close": "Fechar",
+            "error": "Erro: __error__",
+            "networkError": "Erro na rede!",
+            "tokenError": "Erro no token de acesso!",
+            "notFound": "Não encontrado!",
+            "clickToPlay": "Tocar música",
+            "clickToDownload": "Download",
+            "captcha": {
+                "send": "Enviar",
+            },
+            "settings": {
+                "title": "Configurações",
+                "performerOnly": "Search only by artist name",
+                "language": "Idioma",
+                "sort": {
+                    "title": "Organizar",
+                    "byDuration": "Por duração",
+                    "byPopularity": "Por popularidade",
+                    "byDate": "Por data de adição"
+                }
+            },
+            "donate": "Doações são para manter o servidor e o serviço no ar"
+        }
+    },
     ru: {
         translation: {
             "title": "datmusic",
