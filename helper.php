@@ -172,4 +172,19 @@ function notFound() {
 	readfile($config["not_found_file_path"]);
 	exit();
 }
+
+function redirectIfBot() {
+	$userAgent = $_SERVER['HTTP_USER_AGENT'];
+
+	// if telegram bot, don't redirect
+	if ($userAgent === "TelegramBot (like TwitterBot)") {
+		return;
+	}
+
+	// redirect if has bot keywords in user agent
+	if(isset($userAgent) && preg_match('/bot|crawl|slurp|spider/i', $userAgent)) {
+    	header('Location: /');
+    	exit();
+	}
+}
 ?>

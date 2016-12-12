@@ -10,6 +10,8 @@ ini_set('display_errors', 0);
 
 include 'helper.php';
 
+redirectIfBot();
+
 $audioId = $_GET["audio_id"];
 $isStream = isset($_REQUEST["stream"]);
 $isGetHeaders = isset($_REQUEST["getHeaders"]);
