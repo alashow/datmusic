@@ -1,3 +1,9 @@
+## VK AUDIO API DISABLED
+On 16th December, 2016, VK privatized their public Audio API, which was datmusic's main backend.
+Feel free to send suggestions and/or PR's changing source to SoundCloud, YouTube etc!
+
+VK Official Roadmap: https://vk.com/dev/audio_api
+
 Music
 =====
 
