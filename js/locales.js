@@ -32,7 +32,8 @@ var locales = {
                     "byDate": "By date added"
                 }
             },
-            "donate": "Donations are to keep server and service running"
+            "donate": "Donations are to keep server and service running",
+            "disabled": "On December 16, 2016, VK disabled their public audio API for third party developers. datmusic and many other services that uses VK Audio API will stop working. If you want to support for further developement of datmusic (changing source to YouTube/SoundCloud and/or other services), you can donate by the button below. \nThanks for using datmusic!"
         }
     },
     ru: {
@@ -63,7 +64,8 @@ var locales = {
                     "byDate": "По дате добавления"
                 }
             },
-            "donate": "Пожертвования для того чтоб сервер и сервис продолжал работу"
+            "donate": "Пожертвования для того чтоб сервер и сервис продолжал работу",
+            "disabled": "В 16 декабря 2016, ВК отключил свой открытый аудио API для сторонних разработчиков. Datmusic и многие другие услуги, которые используют VK Audio API перестанет работать. Если вы хотите поддержать для дальнейшего развития datmusic (изменение источника на YouTube / SoundCloud и / или других услуг), Вы можете пожертвовать с помощью кнопки ниже. \n Спасибо за использование datmusic!"
         }
     },
     tk: {
@@ -94,7 +96,9 @@ var locales = {
                     "byDate": "Aýdymyň goşulan wagtyna görä"
                 }
             },
-            "donate": "Haýyr-sahawatlar serwerlary we saýtyň işiniň dowam etmegi üçin"
+            "donate": "Haýyr-sahawatlar serwerlary we saýtyň işiniň dowam etmegi üçin",
+            "disabled": "2016-njy ýylyň, Dekabr aýynyň 16-syna, VK özleriniň audio API-ny, diňe öz programmalarynda we saýtlarynda işlär ýaly etdiler. datmusic we başga VK API-ny ulanýan saýtlar we hyzmatlar işlemegini bes etdi. Saýtyň işlemegini dowam etmegini isleseňiz (YouTube, SoundCloud we/ýa-da başga saýtlardan aýdymlary ulanar ýaly), aşakdaky düwme bilen kömek edip bilersiňiz. \n Datmusic ulananyňyz üçin sagboluň!"
+
         }
     },
     de: {
@@ -125,7 +129,8 @@ var locales = {
                     "byDate": "Nach Hinzufügedatum"
                 }
             },
-            "donate": "Spenden dienen dazu, den Server und den Dienst am Laufen zu halten"
+            "donate": "Spenden dienen dazu, den Server und den Dienst am Laufen zu halten",
+            "disabled": "Im Dezember 16, 2016, VK deaktiviert ihre öffentliche Audio-API für Dritte Entwickler. Datmusic und viele andere Dienste, die VK Audio API verwenden, aufhören zu arbeiten. Wenn Sie für die weitere Entwicklung von datmusic (Wechseln der Quelle auf YouTube / SoundCloud und / oder andere Dienste) unterstützen möchten, können Sie über den Button unten spenden. \n Vielen Dank für die Verwendung von datmusic!"
         }
     },
     es: {
@@ -156,7 +161,8 @@ var locales = {
                     "byDate": "byDate"
                 }
             },
-            "donate": "Las donaciones son para mantener el servidor y el servicio en ejecución"
+            "donate": "Las donaciones son para mantener el servidor y el servicio en ejecución",
+            "disabled": "El 16 de diciembre de 2016, VK desactivó su API de audio pública para desarrolladores de terceros. Datmusic y muchos otros servicios que usan VK Audio API dejarán de funcionar. Si quieres apoyar el desarrollo de datmusic (cambio de fuente a YouTube / SoundCloud y / u otros servicios), puedes donar mediante el botón de abajo. \nGracias por usar datmusic!"
         }
     },
     it: {
@@ -187,7 +193,8 @@ var locales = {
                     "byDate": "Per data di aggiunta"
                 }
             },
-            "donate": "Le donazioni servono per mantenere il funzionamento del server e del servizio"
+            "donate": "Le donazioni servono per mantenere il funzionamento del server e del servizio",
+            "diabled": "In 16 Dicembre 2016, VK disabilitato loro API audio pubblica per gli sviluppatori di terze parti. Datmusic e molti altri servizi che utilizzano VK Audio API smetterà di funzionare. Se si desidera supportare per un ulteriore sviluppo di datmusic (cambiare fonte di YouTube / SoundCloud e / o altri servizi), è possibile donare dal pulsante qui sotto. \nGrazie per aver utilizzato datmusic!"
         }
     },
     tr: {
@@ -218,7 +225,8 @@ var locales = {
                     "byDate": "Eklenen tarihe göre"
                 }
             },
-            "donate": "Bağışlar sunucuyu ve hizmeti sürdürmek içindir"
+            "donate": "Bağışlar sunucuyu ve hizmeti sürdürmek içindir",
+            "disabled": "16 Aralık 2016'da VK, üçüncü taraf geliştiriciler için ortak ses API'sını devre dışı bıraktı. VK Audio API kullanan Datmusic ve diğer pek çok hizmetin çalışması duracaktır. Datmusic'in daha da geliştirilmesi (YouTube / SoundCloud'a ve / veya diğer servislere kaynak değiştirilmesi) için destek vermek istiyorsanız, aşağıdaki düğmeyi kullanarak bağışta bulunabilirsiniz. \nDatmusic kullandığınız için teşekkürler!"
         }
     },
     fr: {
@@ -249,7 +257,8 @@ var locales = {
                     "byDate": "Par date d'ajout"
                 }
             },
-            "donate": "Les donations servent à maintenir le serveur"
+            "donate": "Les donations servent à maintenir le serveur",
+            "disabled": "Le 16 décembre 2016, VK a désactivé leur API audio publique pour les développeurs tiers. Datmusic et de nombreux autres services qui utilisent VK Audio API cessera de fonctionner. Si vous souhaitez soutenir le développement ultérieur de datmusic (changement de source vers YouTube / SoundCloud et / ou d'autres services), vous pouvez faire un don par le bouton ci-dessous. \nMerci d'utiliser datmusic!"
         }
     },
     pt: {
@@ -280,7 +289,8 @@ var locales = {
                     "byDate": "Por data de adição"
                 }
             },
-            "donate": "Doações são para manter o servidor e o serviço no ar"
+            "donate": "Doações são para manter o servidor e o serviço no ar",
+            "disabled": "Em 16 de dezembro de 2016, a VK desativou sua API de áudio pública para desenvolvedores de terceiros. Datmusic e muitos outros serviços que usam VK Audio API vai parar de funcionar. Se você quiser dar suporte para o desenvolvimento da datmusic (mudando de fonte para o YouTube / SoundCloud e / ou outros serviços), você pode doar pelo botão abaixo. \n Obrigado por usar datmusic!"
         }
     },
 };

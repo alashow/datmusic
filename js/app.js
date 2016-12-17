@@ -54,7 +54,8 @@ $(document).ready(function($) {
         langCookie: "musicLang",
         sortCookie: "musicSort",
         performerOnlyCookie: "musicPerformerOnly",
-        currentTrack: -1
+        currentTrack: -1,
+        disabled: true
     };
 
     i18n.init({
@@ -144,6 +145,10 @@ $(document).ready(function($) {
             search(config.oldQuery, null, null, true);
         };
     });
+
+    if (config.disabled) {
+            return;
+    };
 
     //Trigger search button when pressing enter button
     $('#query').bind('keypress', function(event) {
@@ -238,6 +243,10 @@ $(document).ready(function($) {
 
     //Main function for search
     function search(newQuery, captcha_sid, captcha_key, analytics, performer_only) {
+        if (config.disabled) {
+            return;
+        };
+
         config.currentTrack = -1; //reset current, so it won't play next song with wrong list
 
         if (newQuery.length > 1 && newQuery != config.oldQuery) {
