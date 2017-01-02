@@ -1,7 +1,7 @@
 Music
 =====
 
-Search and Download free music from VK. Using VK [audio search api](https://vk.com/dev/audio.search).
+Search and Download free music from VK.
 
 ## Demo
 [datmusic](https://datmusic.xyz)
