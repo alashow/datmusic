@@ -27,33 +27,14 @@ $(document).ready(function($) {
         }
     });
 
-    /* ========================================================================
-     * To get your own token follow instructions at https://github.com/alashow/music/wiki#how-to-get-your-own-token
-     * ======================================================================== */
-    // Default config for vk audio.search api
-    var vkConfig = {
-        url: "https://api.vk.com/method/audio.search", /*base url*/
-        autoComplete: 1, /*to correct for mistakes in the search query (Beetles->Beatles)*/
-        accessToken: "fff9ef502df4bb10d9bf50dcd62170a24c69e98e4d847d9798d63dacf474b674f9a512b2b3f7e8ebf1d69", /*this token might not work*/
-        count: 300 // 300 is limit of vk api
-    };
-
     var config = {
         title: "datmusic", //will be changed after i18n init
+        apiUrl: "https://api.datmusic.xyz/",
         appUrl: window.location.protocol + "//datmusic.xyz/",
-        downloadServerUrl: window.location.protocol + "//datmusic.xyz/", //change if download.php file located elsewhere
-        proxyMode: true, //when proxyMode enabled, search will performed through server (search.php), advantages of proxyMode are: private accessToken, less captchas. Disadvantages: preview of audio will be slower
-        proxyDownload: true, //enable to download with download.php, disable to download from vk. Note: doesn't work when config.proxyMode enabled.
-        captchaProxy: true, //in some countries(for ex. in China, or Turkmenistan) vk is fully blocked, captcha images won't show.
-        captchaProxyUrl: "https://dotjpg.co/timthumb/thumb.php?w=200&src=", //original captcha url will be appended
-        prettyDownloadUrlMode: true, //converts http://datmusic.xyz/download.php?audio_id=16051160_137323200 to http://datmusic.xyz/JjGBD:AEnvc, see readme for rewriting regex
-        performerOnly: false, /*default config for searching only by artist name*/
-        sort: 2, /*default sort mode (1 — by duration, 2 — by popularity, 0 — by date added)*/
+        bitratesEnabled: false,
         oldQuery: null, /*for storing previous queries. Used to not search again with the same query*/
         defaultLang: "en",
         langCookie: "musicLang",
-        sortCookie: "musicSort",
-        performerOnlyCookie: "musicPerformerOnly",
         currentTrack: -1
     };
 
@@ -103,18 +84,6 @@ $(document).ready(function($) {
     //set selected settings, please.
     $('#languageSelect').val(i18n.lng());
 
-    if ($.cookie(config.sortCookie)) {
-        $('#sortSelect').val($.cookie(config.sortCookie));
-        config.sort = $.cookie(config.sortCookie);
-    } else {
-        $('#sortSelect').val(config.sort);
-    }
-
-    if ($.cookie(config.performerOnlyCookie) == "true") {
-        $('#performerOnlyCheck').prop("checked", $.cookie(config.performerOnlyCookie));
-        config.performerOnly = $.cookie(config.performerOnlyCookie);
-    }
-
     //change language live
     $('#languageSelect').on('change', function(event) {
         i18n.setLng($(this).val(), function(err, t) {
@@ -123,26 +92,6 @@ $(document).ready(function($) {
             $('#jp_container_1').attr('data-original-title', title);
             $('#jp_container_1').attr('title', '');
         });
-    });
-
-    //change sort type
-    $('#sortSelect').on('change', function(event) {
-        sortType = parseInt($(this).val());
-        config.sort = sortType;
-        $.cookie(config.sortCookie, sortType);
-        if (config.oldQuery != null) {
-            search(config.oldQuery, null, null, true);
-        };
-    });
-
-    $('#performerOnlyCheck').change(function() {
-        isChecked = $(this).is(':checked');
-        config.performerOnly = isChecked;
-        $.cookie(config.performerOnlyCookie, isChecked);
-
-        if (config.oldQuery != null) {
-            search(config.oldQuery, null, null, true);
-        };
     });
 
     //Trigger search button when pressing enter button
@@ -252,32 +201,14 @@ $(document).ready(function($) {
         //request params
         var data = {
             q: newQuery,
-            sort: config.sort,
-            auto_complete: vkConfig.autoComplete,
-            access_token: vkConfig.accessToken,
-            count: vkConfig.count
+            page: 0
         };
 
-        //add captcha params if available
-        if (captcha_sid != null && captcha_key != null) {
-            data.captcha_sid = captcha_sid;
-            data.captcha_key = captcha_key;
-        };
-
-        //search only by artist name.
-        if (performer_only) {
-            data.performer_only = 1;
-        } else {
-            data.performer_only = config.performerOnly == true ? 1 : 0;
-        }
-
-        //set api url to our php file if proxy mode enabled
-        url = config.proxyMode ? config.appUrl + "search.php" : vkConfig.url;
         $.ajax({
-            url: url,
+            url: config.apiUrl + "search",
             data: data,
             method: "GET",
-            dataType: "jsonp",
+            dataType: "json",
             cache: true,
             beforeSend: function() {
                 $('#loading').show(); // Show loading
@@ -286,22 +217,7 @@ $(document).ready(function($) {
                 appendError(i18n.t("networkError")); //Network error, ajax failed
             },
             success: function(msg) {
-                if (msg.error) {
-                    if (msg.error.error_code == 5) {
-                        appendError(i18n.t("tokenError")); //Access token error
-                    } else {
-                        appendError(i18n.t("error", {
-                            error: msg.error.error_msg
-                        })); //Showing returned error
-                    }
-
-                    if (msg.error.error_code == 14) {
-                        showCaptcha(msg.error.captcha_sid, msg.error.captcha_img); // api required captcha, showing it
-                    };
-                    return;
-                };
-
-                if (msg.response == 0) {
+                if (msg.data == 0) {
                     appendError(i18n.t("notFound")); //Response empty, audios not found 
                     return;
                 };
@@ -309,42 +225,29 @@ $(document).ready(function($) {
                 $('#result > .list-group').html(""); //clear list
 
                 //appending audio items to dom
-                for (var i = 1; i < msg.response.length; i++) {
-                    downloadUrl = config.downloadServerUrl;
-                    streamUrl = config.downloadServerUrl;
-                    ownerId = msg.response[i].owner_id;
-                    aid = msg.response[i].aid;
+                for (var i = 1; i < msg.data.length; i++) {
+                    downloadUrl = msg.data[i].download;
+                    streamUrl = msg.data[i].stream;
 
-                    //little hard code :)
-                    if (config.prettyDownloadUrlMode) {
-                        streamUrl += "stream/";
-                        prettyId = encode(ownerId) + ":" + encode(aid);
-                        downloadUrl += prettyId;
-                        streamUrl += prettyId;
-                    } else {
-                        downloadUrl += "download.php?audio_id=" + ownerId + "_" + aid;
-                        streamUrl += "download.php?stream=true&audio_id=" + ownerId + "_" + aid;
-                    }
-
-                    audioTitle = msg.response[i].artist + ' - ' + msg.response[i].title;
-                    audioDuration = msg.response[i].duration.toTime();
+                    audioTitle = msg.data[i].artist + ' - ' + msg.data[i].title;
+                    audioDuration = msg.data[i].duration.toTime();
 
                     audioView = {
                         "clickToPlay": i18n.t("clickToPlay"),
                         "clickToDownload": i18n.t("clickToDownload"),
-                        "durationSeconds": msg.response[i].duration,
-                        "duration": msg.response[i].duration.toTime(),
+                        "durationSeconds": msg.data[i].duration,
+                        "duration": audioDuration,
                         "url": {
-                            "stream": config.proxyMode ? streamUrl : msg.response[i].url,
+                            "stream": streamUrl,
                             "download": {
-                                "original": (!config.proxyMode && !config.proxyDownload) ? msg.response[i].url : downloadUrl, //if both proxyMode and proxyDownload mode is disabled, then give direct vk url. otherwise, php downloader one.
-                                "64": downloadUrl + (config.prettyDownloadUrlMode ? "/64" : "&bitrate=64"),
-                                "128": downloadUrl + (config.prettyDownloadUrlMode ? "/128" : "&bitrate=128"),
-                                "192": downloadUrl + (config.prettyDownloadUrlMode ? "/192" : "&bitrate=192"),
-                                "320": downloadUrl + (config.prettyDownloadUrlMode ? "/320" : "&bitrate=320")
+                                "original": downloadUrl,
+                                "64": downloadUrl + "/64",
+                                "128": downloadUrl + "/128",
+                                "192": downloadUrl + "/192",
+                                "320": downloadUrl + "/320"
                             }
                         },
-                        "audio": msg.response[i].artist + ' - ' + msg.response[i].title
+                        "audio": audioTitle
                     };
 
                     audioRendered = Mustache.render(audioTemplate, audioView);
@@ -377,7 +280,7 @@ $(document).ready(function($) {
             downloadUrl = infoEl.attr('href');
             duration = parseInt($(infoEl).attr('data-duration'));
 
-            if (!config.proxyMode && !config.proxyDownload) { //if proxies are not enabled, we can't show fileSize and bitrate. So just Change dots/linkText to 'Download'
+            if (!config.bitratesEnabled) {
                 infoEl.text(i18n.t("clickToDownload"));
             } else if (infoEl.text() == "...") { //if it's not shown yet
                 getFileSize(downloadUrl, function(sizeInBytes) {
@@ -534,37 +437,6 @@ $(document).ready(function($) {
         }
     }
 
-    //Showing captcha with given captcha id and image
-    function showCaptcha(captchaSid, captchaImage) {
-
-        if (config.captchaProxy) {
-            captchaImage = config.captchaProxyUrl + captchaImage;
-        }
-
-        $('#captchaModal').modal("show");
-        $('#captchaImage').attr('src', captchaImage);
-
-        //refresh captcha onclick
-        $('#captchaImage').on('click', function(event) {
-            $(this).attr('src', captchaImage);
-        });
-
-        //Searching with old query and captcha
-        $('#captchaSend').on('click', function() {
-            $('#captchaModal').modal("hide");
-            search($('#query').val(), captchaSid, $('#captchaKey').val(), true);
-        });
-
-        //trigger send click after pressing enter button
-        $('#captchaKey').bind('keypress', function(event) {
-            if (event.keyCode == 13) {
-                $('#captchaSend').trigger('click');
-            };
-        });
-
-        track('captcha');
-    }
-
     /**
      * @param query param name
      * @return query param value
@@ -581,16 +453,6 @@ $(document).ready(function($) {
         $.get(url, function(data) {
             callback(parseInt(data));
         });
-
-        // var request = new XMLHttpRequest();
-        // //get only header.
-        // request.open("HEAD", url, true);
-        // request.onreadystatechange = function() {
-        //     if (this.readyState == this.DONE) {
-        //         callback(parseInt(request.getResponseHeader("Content-Length")));
-        //     }
-        // };
-        // request.send();
     }
 
     function track(type, value) {
@@ -624,34 +486,4 @@ $(document).ready(function($) {
         } while (Math.abs(bytes) >= thresh && u < units.length - 1);
         return bytes.toFixed(1) + ' ' + units[u];
     }
-
-    // https://gist.github.com/alashow/07d9ef9c02ee697ab47d
-    var map = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
-        'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
-        'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
-        'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't',
-        'u', 'v', 'x', 'y', 'z', '1', '2', '3'
-    ];
-
-    function encode(input) {
-        length = map.length;
-        var encoded = "";
-
-        if (input == 0)
-            return map[0];
-
-        if (input < 0) {
-            input *= -1;
-            encoded += "-";
-        };
-
-        while (input > 0) {
-            val = parseInt(input % length);
-            input = parseInt(input / length);
-            encoded += map[val];
-        }
-
-        return encoded;
-    }
-    // end code from gist
 });
