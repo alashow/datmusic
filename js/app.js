@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.0.3
+ * Music v2.0.4
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -285,7 +285,7 @@ $(document).ready(function($) {
                 bytesUrl = link.replace('stream/', 'bytes/');
                 getFileSize(bytesUrl, function(sizeInBytes) {
                     bitrate = parseInt(sizeInBytes * 8 / duration / 1000);
-                    info = humanFileSize(sizeInBytes, true) + ", ~" + bitrate + " kbps";
+                    info =  bitrate + " kbps" + ", " + humanFileSize(sizeInBytes, true);
                     infoEl.text(info);
 
                     allowedBitrateClasses = {
@@ -302,7 +302,7 @@ $(document).ready(function($) {
                             bitrateEl.remove();
                         } else {
                             bytes = allowedBitrate / 8 * duration * 1000;
-                            bitrateEl.text(bitrateEl.text() + ", ~" + humanFileSize(bytes, true));
+                            bitrateEl.text(bitrateEl.text() + ", " + humanFileSize(bytes, true));
                         };
                     };
 
