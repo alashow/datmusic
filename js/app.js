@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.0.1
+ * Music v2.0.3
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -245,7 +245,6 @@ $(document).ready(function($) {
                                 "64": downloadUrl + "/64",
                                 "128": downloadUrl + "/128",
                                 "192": downloadUrl + "/192",
-                                "320": downloadUrl + "/320"
                             }
                         },
                         "audio": audioTitle
@@ -293,7 +292,6 @@ $(document).ready(function($) {
                         64: "bitrate-64",
                         128: "bitrate-128",
                         192: "bitrate-192",
-                        320: "bitrate-320"
                     };
 
                     //remove bitrate convertation link from list if allowedBitrate equal or greater than original bitrate
