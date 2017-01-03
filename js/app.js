@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.0.4
+ * Music v2.0.5
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -226,7 +226,7 @@ $(document).ready(function($) {
                 $('#result > .list-group').html(""); //clear list
 
                 //appending audio items to dom
-                for (var i = 1; i < msg.data.length; i++) {
+                for (var i = 0; i < msg.data.length; i++) {
                     downloadUrl = msg.data[i].download;
                     streamUrl = msg.data[i].stream;
 
