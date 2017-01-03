@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.4.6
+ * Music v2.0.1
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -31,8 +31,9 @@ $(document).ready(function($) {
         title: "datmusic", //will be changed after i18n init
         apiUrl: "https://api.datmusic.xyz/",
         appUrl: window.location.protocol + "//datmusic.xyz/",
-        bitratesEnabled: false,
-        oldQuery: null, /*for storing previous queries. Used to not search again with the same query*/
+        bitratesEnabled: true,
+        oldQuery: null,
+        /*for storing previous queries. Used to not search again with the same query*/
         defaultLang: "en",
         langCookie: "musicLang",
         currentTrack: -1
@@ -56,7 +57,7 @@ $(document).ready(function($) {
 
     //Download apk if android
     if ($.cookie('showAndroidDownload') === undefined) {
-        
+
         //show again after 2 days :)
         $.cookie('showAndroidDownload', false, {
             expires: 2
@@ -136,15 +137,15 @@ $(document).ready(function($) {
             playNext();
         },
         //sync playing/paused status with audio element
-        play: function(){
+        play: function() {
             currentTrackEl = $($('.list-group-item')[config.currentTrack]).find('.play');
             $(el).find('.glyphicon').addClass('glyphicon-pause');
             $(el).find('.glyphicon').removeClass('glyphicon-play');
         },
-        pause: function(){
+        pause: function() {
             currentTrackEl = $($('.list-group-item')[config.currentTrack]).find('.play');
             $(el).find('.glyphicon').addClass('glyphicon-play');
-            $(el).find('.glyphicon').removeClass('glyphicon-pause');    
+            $(el).find('.glyphicon').removeClass('glyphicon-pause');
         }
     });
 
@@ -160,21 +161,21 @@ $(document).ready(function($) {
     } else if (!searchFromQueryParam()) {
         //Simulating search for demo of searching
         var artists = [
-           "2 Cellos", "Agnes Obel", "Aloe Black", "Andrew Belle", "Angus Stone", "Aquilo", "Arctic Monkeys",
-           "Avicii", "Balmorhea", "Barcelona", "Bastille", "Ben Howard", "Benj Heard", "Birdy", "Broods",
-           "Calvin Harris", "Charlotte OC", "City of The Sun", "Civil Twilight", "Clint Mansell", "Coldplay",
-           "Daft Punk", "Damien Rice", "Daniela Andrade", "Daughter", "David O'Dowda", "Dawn Golden", "Dirk Maassen",
-           "Ed Sheeran", "Eminem", "Fabrizio Paterlini", "Fink", "Fleurie", "Florence and The Machine", "Gem club",
-           "Glass Animals", "Greg Haines", "Greg Maroney", "Groen Land", "Halsey", "Hans Zimmer", "Hozier",
-           "Imagine Dragons", "Ingrid Michaelson", "Jamie XX", "Jarryd James", "Jasmin Thompson", "Jaymes Young",
-           "Jessie J", "Josef Salvat", "Julia Kent", "Kai Engel", "Keaton Henson", "Kendra Logozar", "Kina Grannis",
-           "Kodaline", "Kygo", "Kyle Landry", "Lana Del Rey", "Lera Lynn", "Lights & Motion", "Linus Young", "Lo-Fang",
-           "Lorde", "Ludovico Einaudi", "M83", "MONO", "MS MR", "Macklemore", "Mammals", "Maroon 5", "Martin Garrix",
-           "Mattia Cupelli", "Max Richter", "Message To Bears", "Mogwai", "Mumford & Sons", "Nils Frahm", "ODESZA", "Oasis",
-           "Of Monsters and Men", "Oh Wonder", "Philip Glass", "Phoebe Ryan", "Rachel Grimes", "Radiohead", "Ryan Keen",
-           "Sam Smith", "Seinabo Sey", "Sia", "Takahiro Kido", "The Irrepressibles", "The Neighbourhood", "The xx",
-           "VLNY", "Wye Oak", "X ambassadors", "Yann Tiersen", "Yiruma", "Young Summer", "Zack Hemsey", "Zinovia",
-           "deadmau5", "pg.lost", "Ólafur Arnalds"
+            "2 Cellos", "Agnes Obel", "Aloe Black", "Andrew Belle", "Angus Stone", "Aquilo", "Arctic Monkeys",
+            "Avicii", "Balmorhea", "Barcelona", "Bastille", "Ben Howard", "Benj Heard", "Birdy", "Broods",
+            "Calvin Harris", "Charlotte OC", "City of The Sun", "Civil Twilight", "Clint Mansell", "Coldplay",
+            "Daft Punk", "Damien Rice", "Daniela Andrade", "Daughter", "David O'Dowda", "Dawn Golden", "Dirk Maassen",
+            "Ed Sheeran", "Eminem", "Fabrizio Paterlini", "Fink", "Fleurie", "Florence and The Machine", "Gem club",
+            "Glass Animals", "Greg Haines", "Greg Maroney", "Groen Land", "Halsey", "Hans Zimmer", "Hozier",
+            "Imagine Dragons", "Ingrid Michaelson", "Jamie XX", "Jarryd James", "Jasmin Thompson", "Jaymes Young",
+            "Jessie J", "Josef Salvat", "Julia Kent", "Kai Engel", "Keaton Henson", "Kendra Logozar", "Kina Grannis",
+            "Kodaline", "Kygo", "Kyle Landry", "Lana Del Rey", "Lera Lynn", "Lights & Motion", "Linus Young", "Lo-Fang",
+            "Lorde", "Ludovico Einaudi", "M83", "MONO", "MS MR", "Macklemore", "Mammals", "Maroon 5", "Martin Garrix",
+            "Mattia Cupelli", "Max Richter", "Message To Bears", "Mogwai", "Mumford & Sons", "Nils Frahm", "ODESZA", "Oasis",
+            "Of Monsters and Men", "Oh Wonder", "Philip Glass", "Phoebe Ryan", "Rachel Grimes", "Radiohead", "Ryan Keen",
+            "Sam Smith", "Seinabo Sey", "Sia", "Takahiro Kido", "The Irrepressibles", "The Neighbourhood", "The xx",
+            "VLNY", "Wye Oak", "X ambassadors", "Yann Tiersen", "Yiruma", "Young Summer", "Zack Hemsey", "Zinovia",
+            "deadmau5", "pg.lost", "Ólafur Arnalds"
         ]
 
         var demoArtist = artists[Math.floor(Math.random() * artists.length)];
@@ -277,18 +278,23 @@ $(document).ready(function($) {
             infoEl = $(dropdown.find('.info-link')[0]);
 
             link = infoEl.attr('data-stream');
-            downloadUrl = infoEl.attr('href');
             duration = parseInt($(infoEl).attr('data-duration'));
 
             if (!config.bitratesEnabled) {
                 infoEl.text(i18n.t("clickToDownload"));
             } else if (infoEl.text() == "...") { //if it's not shown yet
-                getFileSize(downloadUrl, function(sizeInBytes) {
+                bytesUrl = link.replace('stream/', 'bytes/');
+                getFileSize(bytesUrl, function(sizeInBytes) {
                     bitrate = parseInt(sizeInBytes * 8 / duration / 1000);
                     info = humanFileSize(sizeInBytes, true) + ", ~" + bitrate + " kbps";
                     infoEl.text(info);
 
-                    allowedBitrateClasses = {64: "bitrate-64", 128: "bitrate-128", 192: "bitrate-192", 320: "bitrate-320"};
+                    allowedBitrateClasses = {
+                        64: "bitrate-64",
+                        128: "bitrate-128",
+                        192: "bitrate-192",
+                        320: "bitrate-320"
+                    };
 
                     //remove bitrate convertation link from list if allowedBitrate equal or greater than original bitrate
                     //otherwise, add calculated size of bitrate to list 
@@ -449,7 +455,6 @@ $(document).ready(function($) {
     }
 
     function getFileSize(url, callback) {
-        url += "?getBytes";
         $.get(url, function(data) {
             callback(parseInt(data));
         });
