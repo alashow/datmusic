@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.0.5
+ * Music v2.0.6
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -163,7 +163,7 @@ $(document).ready(function($) {
         var artists = [
             "2 Cellos", "Agnes Obel", "Aloe Black", "Andrew Belle", "Angus Stone", "Aquilo", "Arctic Monkeys",
             "Avicii", "Balmorhea", "Barcelona", "Bastille", "Ben Howard", "Benj Heard", "Birdy", "Broods",
-            "Calvin Harris", "Charlotte OC", "City of The Sun", "Civil Twilight", "Clint Mansell", "Coldplay",
+            "Calvin Harris", "Charlotte OC", "City of The Sun", "Civil Twilight", "Clint Mansel", "Coldplay",
             "Daft Punk", "Damien Rice", "Daniela Andrade", "Daughter", "David O'Dowda", "Dawn Golden", "Dirk Maassen",
             "Ed Sheeran", "Eminem", "Fabrizio Paterlini", "Fink", "Fleurie", "Florence and The Machine", "Gem club",
             "Glass Animals", "Greg Haines", "Greg Maroney", "Groen Land", "Halsey", "Hans Zimmer", "Hozier",
@@ -285,7 +285,7 @@ $(document).ready(function($) {
                 bytesUrl = link.replace('stream/', 'bytes/');
                 getFileSize(bytesUrl, function(sizeInBytes) {
                     bitrate = parseInt(sizeInBytes * 8 / duration / 1000);
-                    info =  bitrate + " kbps" + ", " + humanFileSize(sizeInBytes, true);
+                    info = bitrate + " kbps" + ", " + humanFileSize(sizeInBytes, true);
                     infoEl.text(info);
 
                     allowedBitrateClasses = {
