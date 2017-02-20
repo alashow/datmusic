@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.0.6
+ * Music v2.0.7
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -282,7 +282,7 @@ $(document).ready(function($) {
             if (!config.bitratesEnabled) {
                 infoEl.text(i18n.t("clickToDownload"));
             } else if (infoEl.text() == "...") { //if it's not shown yet
-                bytesUrl = link.replace('stream/', 'bytes/');
+                bytesUrl = config.apiUrl + link.split(config.appUrl)[1].replace("stream", "bytes");
                 getFileSize(bytesUrl, function(sizeInBytes) {
                     bitrate = parseInt(sizeInBytes * 8 / duration / 1000);
                     info = bitrate + " kbps" + ", " + humanFileSize(sizeInBytes, true);
