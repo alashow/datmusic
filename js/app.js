@@ -29,7 +29,7 @@ $(document).ready(function($) {
 
     var config = {
         title: "datmusic", //will be changed after i18n init
-        apiUrl: "https://api.datmusic.xyz/",
+        apiUrl: "https://api.example.com/",
         appUrl: window.location.protocol + "//datmusic.xyz/",
         bitratesEnabled: true,
         oldQuery: null,
@@ -282,7 +282,9 @@ $(document).ready(function($) {
             if (!config.bitratesEnabled) {
                 infoEl.text(i18n.t("clickToDownload"));
             } else if (infoEl.text() == "...") { //if it's not shown yet
-                bytesUrl = config.apiUrl + link.split(config.appUrl)[1].replace("stream", "bytes");
+                parts = link.split("/");
+                length = parts.length;
+                bytesUrl = config.apiUrl + "bytes/" + parts[length - 2] + "/" + parts[length - 1];
                 getFileSize(bytesUrl, function(sizeInBytes) {
                     bitrate = parseInt(sizeInBytes * 8 / duration / 1000);
                     info = bitrate + " kbps" + ", " + humanFileSize(sizeInBytes, true);
