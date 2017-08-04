@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.4.0
+ * Music v2.0.9
  * https://github.com/alashow/music
  * ======================================================================== */
 html {
@@ -57,10 +57,21 @@ a {
 	text-decoration: none !important;
 }
 li.list-group-item a {
-	color: #555555;
+	color: #555;
+}
+li.list-group-item.active .name {
+	color: #fff;
+}
+li.list-group-item .name {
+	color: #555;
 }
 li.list-group-item a:hover {
 	color: #18bc9c;
+}
+li.list-group-item.active .btn-primary {
+	color: #2c3e50;
+	background-color: #fff;
+	border-color: #fff;
 }
 .play {
 	cursor: pointer;

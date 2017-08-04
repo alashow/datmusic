@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.0.7
+ * Music v2.0.9
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -372,7 +372,8 @@ $(document).ready(function($) {
      * @param index of audio, in .list-group-item
      **/
     function play(index) {
-        el = $($('.list-group-item')[index]).find('.play');
+        parent = $($('.list-group-item')[index]);
+        el = parent.find('.play');
 
         //pause/play if clicked to current
         if (index == config.currentTrack) {
@@ -414,8 +415,12 @@ $(document).ready(function($) {
             $(e).removeClass('glyphicon-pause');
             $(e).addClass('glyphicon-play');
         });
+        $('.list-group-item.active').each(function(index, e) {
+            $(e).removeClass('active');
+        });
 
         //change current audio to playing state
+        parent.addClass('active');
         $(el).find('.glyphicon').removeClass('glyphicon-play');
         $(el).find('.glyphicon').addClass('glyphicon-pause');
 
