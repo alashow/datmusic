@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.0.9
+ * Music v2.1.0
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -33,6 +33,7 @@ $(document).ready(function($) {
         appUrl: window.location.protocol + "//datmusic.xyz/",
         bitratesEnabled: true,
         oldQuery: null,
+        page: 0,
         /*for storing previous queries. Used to not search again with the same query*/
         defaultLang: "en",
         langCookie: "musicLang",
@@ -96,16 +97,20 @@ $(document).ready(function($) {
     });
 
     //Trigger search button when pressing enter button
-    $('#query').bind('keypress', function(event) {
-        if (event.keyCode == 13) {
+    $('#query').bind('keypress', function(e) {
+        if (e.keyCode == 13) {
             $('.search').trigger('click');
         };
     });
 
-    $('.search').on('click', function(event) {
+    $('.search').on('click', function(e) {
         typedQuery = $('#query').val();
         if (typedQuery == "") return; // return if query empty
-        search(typedQuery, null, null, true);
+        search(typedQuery, 0, null, null, true);
+    });
+
+    $('#load-more').on('click', function(e){
+        search(config.oldQuery, config.page + 1, null, null, true);
     });
 
     // Initialize player
@@ -156,7 +161,7 @@ $(document).ready(function($) {
 
     if (location.hash.length > 2) {
         var decodedQuery = decodeURIComponent(escape(window.atob(location.hash.substring(1, location.hash.length))));
-        search(decodedQuery, null, null, true);
+        search(decodedQuery, 0, null, null, true);
         $('#query').val(decodedQuery);
     } else if (!searchFromQueryParam()) {
         //Simulating search for demo of searching
@@ -179,7 +184,7 @@ $(document).ready(function($) {
         ]
 
         var demoArtist = artists[Math.floor(Math.random() * artists.length)];
-        search(demoArtist, null, null, false, true);
+        search(demoArtist, 0, null, null, false, true);
         $('#query').val(demoArtist);
     }
 
@@ -187,22 +192,26 @@ $(document).ready(function($) {
     $.getScript("js/app.extra.js");
 
     //Main function for search
-    function search(newQuery, captcha_sid, captcha_key, analytics, performer_only) {
-        config.currentTrack = -1; //reset current, so it won't play next song with wrong list
+    function search(newQuery, page, captcha_sid, captcha_key, analytics, performer_only) {
+        if (page == 0) {
+            config.currentTrack = -1; //reset current, so it won't play next song with wrong list
 
-        if (newQuery.length > 1 && newQuery != config.oldQuery) {
-            //change url with new query and page back support
-            window.history.pushState(newQuery, $('title').html(), "?q=" + newQuery);
-            //artist name for title
-            document.title = newQuery.split(" -")[0] + " - " + config.title;
+            if (newQuery.length > 1 && newQuery != config.oldQuery) {
+                //change url with new query and page back support
+                window.history.pushState(newQuery, $('title').html(), "?q=" + newQuery);
+                //artist name for title
+                document.title = newQuery.split(" -")[0] + " - " + config.title;
+            };
+            
+            config.oldQuery = newQuery;
+            config.page = 0;
         };
-
-        config.oldQuery = newQuery;
+        config.page = page;
 
         //request params
         var data = {
             q: newQuery,
-            page: 0
+            page: page
         };
 
         $.ajax({
@@ -212,18 +221,31 @@ $(document).ready(function($) {
             dataType: "json",
             cache: true,
             beforeSend: function() {
-                $('#loading').show(); // Show loading
+                 // Show loading
+                if (page == 0) {
+                    $('#loading').show();
+                } else {
+                    $('#load-more').show();
+                    $('#load-more').find('.spinner').show();
+                    $('#load-more').find('span').hide();
+                }
             },
             error: function() {
                 appendError(i18n.t("networkError")); //Network error, ajax failed
             },
             success: function(msg) {
                 if (msg.data == 0) {
-                    appendError(i18n.t("notFound")); //Response empty, audios not found 
+                    if (page == 0){
+                        appendError(i18n.t("notFound")); //Response empty, audios not found
+                    } else {
+                        $('#load-more').hide();
+                    }
                     return;
                 };
 
-                $('#result > .list-group').html(""); //clear list
+                if (page == 0) {
+                    $('#result > .list-group').html(""); //clear list
+                }
 
                 //appending audio items to dom
                 for (var i = 0; i < msg.data.length; i++) {
@@ -259,6 +281,9 @@ $(document).ready(function($) {
 
                 //hide dat thing after all
                 $('#loading').hide();
+                $('#load-more').show();
+                $('#load-more').find('span').show();
+                $('#load-more').find('.spinner').hide();
 
                 onListRendered();
             }
@@ -432,6 +457,7 @@ $(document).ready(function($) {
         $('#result > .list-group').html("");
         $('#result > .list-group').append('<li class="list-group-item list-group-item-danger">' + error + '</li>');
         $('#loading').hide();
+        $('#loading-more').hide();
     }
 
     /**
@@ -440,7 +466,7 @@ $(document).ready(function($) {
     function searchFromQueryParam() {
         paramQuery = getParameterByName("q");
         if (paramQuery.length > 1) {
-            search(paramQuery, null, null, true);
+            search(paramQuery, 0, null, null, true);
             $('#query').val(paramQuery);
             return true;
         } else {

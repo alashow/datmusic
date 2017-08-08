@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v1.4.7
+ * Music v2.1.0
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -9,6 +9,7 @@ var locales = {
             "title": "datmusic",
             "searchPlaceholder": "Type search query",
             "shortcuts": "\"→\" Next track, \"←\" Previous track, \"Space\" Play/pause",
+            "loadMore": "Load more",
             "apkDownload": "Download app for android?",
             "apkDownloadTitle": "download APK",
             "close": "Close",
@@ -40,6 +41,7 @@ var locales = {
             "title": "datmusic",
             "searchPlaceholder": "Поиск",
             "shortcuts": "\"→\" Следующий трек, \"← \" Предыдущая трек, \"Space\" Воспроизведение/пауза",
+            "loadMore": "Следующий",
             "apkDownload": "Скачать приложение для Android?",
             "apkDownloadTitle": "скачать APK",
             "close": "Закрыть",
@@ -69,6 +71,7 @@ var locales = {
     tk: {
         translation: {
             "title": "datmusic",
+            "loadMore": "Ýene",
             "searchPlaceholder": "Gözleg sözüni ýazyň",
             "shortcuts": "\"→\" Indiki aýdym, \"←\" Öňki aýdym, \"Space\" Oýnat/duzzur",
             "apkDownload": "Android app indir?",
@@ -102,6 +105,7 @@ var locales = {
             "title": "datmusic",
             "searchPlaceholder": "Suchbegriff eingeben",
             "shortcuts": "\"→\" Nächster Titel, \"←\" Vorheriger Titel, \"Space\" Wiedergabe/Pause",
+            "loadMore": "Mehr laden",
             "apkDownload": "App für Android herunterladen?",
             "apkDownloadTitle": "APK herunterladen",
             "close": "Schließen",
@@ -133,6 +137,7 @@ var locales = {
             "title": "datmusic",
             "searchPlaceholder": "Tipo de consulta de búsqueda",
             "shortcuts": "\"→\" Pista siguiente, \"← \" Pista anterior, \“Espacio\" Reproducir/pausa",
+            "loadMore": "Carga más",
             "apkDownload": "¿Descargar la aplicación para Android?",
             "apkDownloadTitle": "Descargar APK",
             "close": "Cerrar",
@@ -164,6 +169,7 @@ var locales = {
             "title": "datmusic",
             "searchPlaceholder": "Tipo cerca interrogazione",
             "shortcuts": "\"→\" Prossima traccia, \"←\" Traccia precedente, \"Spazio\" Riproduci/metti in pausa",
+            "loadMore": "Caricare di più",
             "apkDownload": "Scarica app per android?",
             "apkDownloadTitle": "Scarica APK",
             "close": "Chiudi",
@@ -195,6 +201,7 @@ var locales = {
             "title": "datmusic",
             "searchPlaceholder": "Arama sorgusunu yazın",
             "shortcuts": "\"→\" Sonraki parça, \"←\" Önceki parça, \"Boşluk\" Oynat/duraksat",
+            "loadMore": "Yine",
             "apkDownload": "Android uygulamasını indir?",
             "apkDownloadTitle": "APK'yı indirin",
             "close": "Kapat",
@@ -226,6 +233,7 @@ var locales = {
             "title": "datmusic",
             "searchPlaceholder": "Effectuez votre recherche",
             "shortcuts": "\"→\" Titre suivant, \"←\" Titre précédent, \"Space\" Lecture/Pause",
+            "loadMore": "Suivant",
             "apkDownload": "Télécharger l'application pour android?",
             "apkDownloadTitle": "télécharger l'APK",
             "close": "Fermer",
@@ -257,6 +265,7 @@ var locales = {
             "title": "datmusic",
             "searchPlaceholder": "Digite os parâmetros de busca",
             "shortcuts": "\"→\" Próxima música, \"←\" Música anterior, \"Espaço\" Tocar/pausar",
+            "loadMore": "Carregue mais",
             "apkDownload": "Download do app para android?",
             "apkDownloadTitle": "download APK",
             "close": "Fechar",
