@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.1.0
+ * Music v2.1.1
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -110,7 +110,9 @@ $(document).ready(function($) {
     });
 
     $('#load-more').on('click', function(e){
-        search(config.oldQuery, config.page + 1, null, null, true);
+        next_page = config.page + 1;
+        search(config.oldQuery, next_page, null, null, true);
+        track('load-more', next_page);
     });
 
     // Initialize player
