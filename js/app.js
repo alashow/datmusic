@@ -31,6 +31,8 @@ $(document).ready(function($) {
         title: "datmusic", //will be changed after i18n init
         apiUrl: "https://api.example.com/",
         appUrl: window.location.protocol + "//datmusic.xyz/",
+        captchaProxy: true, //in some countries(for ex. in China, or Turkmenistan) vk is fully blocked, captcha images won't show.      
+        captchaProxyUrl: "https://dotjpg.co/timthumb/thumb.php?w=200&src=", //original captcha url will be appended
         bitratesEnabled: true,
         oldQuery: null,
         page: 0,
@@ -106,12 +108,12 @@ $(document).ready(function($) {
     $('.search').on('click', function(e) {
         typedQuery = $('#query').val();
         if (typedQuery == "") return; // return if query empty
-        search(typedQuery, 0, null, null, true);
+        search(typedQuery, 0, true);
     });
 
-    $('#load-more').on('click', function(e){
+    $('#load-more').on('click', function(e) {
         next_page = config.page + 1;
-        search(config.oldQuery, next_page, null, null, true);
+        search(config.oldQuery, next_page, true);
         track('load-more', next_page);
     });
 
@@ -163,7 +165,7 @@ $(document).ready(function($) {
 
     if (location.hash.length > 2) {
         var decodedQuery = decodeURIComponent(escape(window.atob(location.hash.substring(1, location.hash.length))));
-        search(decodedQuery, 0, null, null, true);
+        search(decodedQuery, 0, true);
         $('#query').val(decodedQuery);
     } else if (!searchFromQueryParam()) {
         //Simulating search for demo of searching
@@ -186,7 +188,7 @@ $(document).ready(function($) {
         ]
 
         var demoArtist = artists[Math.floor(Math.random() * artists.length)];
-        search(demoArtist, 0, null, null, false, true);
+        search(demoArtist, 0, false);
         $('#query').val(demoArtist);
     }
 
@@ -194,7 +196,7 @@ $(document).ready(function($) {
     $.getScript("js/app.extra.js");
 
     //Main function for search
-    function search(newQuery, page, captcha_sid, captcha_key, analytics, performer_only) {
+    function search(newQuery, page, analytics, captcha_id, captcha_key, captcha_index) {
         if (page == 0) {
             config.currentTrack = -1; //reset current, so it won't play next song with wrong list
 
@@ -204,7 +206,7 @@ $(document).ready(function($) {
                 //artist name for title
                 document.title = newQuery.split(" -")[0] + " - " + config.title;
             };
-            
+
             config.oldQuery = newQuery;
             config.page = 0;
         };
@@ -216,6 +218,13 @@ $(document).ready(function($) {
             page: page
         };
 
+        //add captcha params if available
+        if (captcha_id != null && captcha_key != null) {
+            data.captcha_id = captcha_id;
+            data.captcha_key = captcha_key;
+            data.captcha_index = captcha_index;
+        };
+
         $.ajax({
             url: config.apiUrl + "search",
             data: data,
@@ -223,7 +232,7 @@ $(document).ready(function($) {
             dataType: "json",
             cache: true,
             beforeSend: function() {
-                 // Show loading
+                // Show loading
                 if (page == 0) {
                     $('#loading').show();
                 } else {
@@ -232,12 +241,21 @@ $(document).ready(function($) {
                     $('#load-more').find('span').hide();
                 }
             },
-            error: function() {
-                appendError(i18n.t("networkError")); //Network error, ajax failed
+            error: function(response) {
+                var error = response.responseJSON.error;
+                if (error.message) {
+                    appendError(error.message);
+                } else {
+                    appendError(i18n.t("networkError")); //Network error, ajax failed
+                }
+
+                if (error.code == 14) {
+                    showCaptcha(error.captcha_id, error.captcha_img, error.captcha_index); // api required captcha, showing it
+                };
             },
             success: function(msg) {
                 if (msg.data == 0) {
-                    if (page == 0){
+                    if (page == 0) {
                         appendError(i18n.t("notFound")); //Response empty, audios not found
                     } else {
                         $('#load-more').hide();
@@ -468,12 +486,43 @@ $(document).ready(function($) {
     function searchFromQueryParam() {
         paramQuery = getParameterByName("q");
         if (paramQuery.length > 1) {
-            search(paramQuery, 0, null, null, true);
+            search(paramQuery, 0, true);
             $('#query').val(paramQuery);
             return true;
         } else {
             return false;
         }
+    }
+
+    //Showing captcha with given captcha id and image
+    function showCaptcha(captchaId, captchaImage, captchaIndex) {
+
+        if (config.captchaProxy) {
+            captchaImage = config.captchaProxyUrl + captchaImage;
+        }
+
+        $('#captchaModal').modal("show");
+        $('#captchaImage').attr('src', captchaImage);
+
+        //refresh captcha onclick
+        $('#captchaImage').on('click', function(event) {
+            $(this).attr('src', captchaImage);
+        });
+
+        //Searching with old query and captcha
+        $('#captchaSend').on('click', function() {
+            $('#captchaModal').modal("hide");
+            search($('#query').val(), 0, true, captchaId, $('#captchaKey').val(), captchaIndex);
+        });
+
+        //trigger send click after pressing enter button
+        $('#captchaKey').bind('keypress', function(event) {
+            if (event.keyCode == 13) {
+                $('#captchaSend').trigger('click');
+            };
+        });
+
+        track('captcha');
     }
 
     /**
