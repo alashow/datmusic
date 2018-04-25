@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.1.1
+ * Music v2.1.3
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -30,7 +30,7 @@ $(document).ready(function($) {
     var config = {
         title: "datmusic", //will be changed after i18n init
         apiUrl: "https://api.example.com/",
-        appUrl: window.location.protocol + "//datmusic.xyz/",
+        appUrl: window.location.protocol + "//example.com/",
         captchaProxy: true, //in some countries(for ex. in China, or Turkmenistan) vk is fully blocked, captcha images won't show.      
         captchaProxyUrl: "https://dotjpg.co/timthumb/thumb.php?w=200&src=", //original captcha url will be appended
         bitratesEnabled: true,
@@ -242,19 +242,21 @@ $(document).ready(function($) {
                 }
             },
             error: function(response) {
-                var error = response.responseJSON.error;
-                if (error.message) {
-                    appendError(error.message);
-                } else {
-                    appendError(i18n.t("networkError")); //Network error, ajax failed
+                appendError(i18n.t("networkError"));
+            },
+            success: function(response) {
+                if (response.status == "error") {
+                    var error = response.error;
+                    appendError(i18n.t("error", {
+                        error: error.message
+                    }));
+
+                    if (error.code == 14) {
+                        showCaptcha(error.captcha_id, error.captcha_img, error.captcha_index); // api required captcha, showing it
+                    };
                 }
 
-                if (error.code == 14) {
-                    showCaptcha(error.captcha_id, error.captcha_img, error.captcha_index); // api required captcha, showing it
-                };
-            },
-            success: function(msg) {
-                if (msg.data == 0) {
+                if (response.data == 0) {
                     if (page == 0) {
                         appendError(i18n.t("notFound")); //Response empty, audios not found
                     } else {
@@ -268,17 +270,19 @@ $(document).ready(function($) {
                 }
 
                 //appending audio items to dom
-                for (var i = 0; i < msg.data.length; i++) {
-                    downloadUrl = msg.data[i].download;
-                    streamUrl = msg.data[i].stream;
+                var count = response.data.length;
+                for (var i = 0; i < count; i++) {
+                    audio = response.data[i];
+                    downloadUrl = audio.download;
+                    streamUrl = audio.stream;
 
-                    audioTitle = msg.data[i].artist + ' - ' + msg.data[i].title;
-                    audioDuration = msg.data[i].duration.toTime();
+                    audioTitle = audio.artist + ' - ' + audio.title;
+                    audioDuration = audio.duration.toTime();
 
                     audioView = {
                         "clickToPlay": i18n.t("clickToPlay"),
                         "clickToDownload": i18n.t("clickToDownload"),
-                        "durationSeconds": msg.data[i].duration,
+                        "durationSeconds": audio.duration,
                         "duration": audioDuration,
                         "url": {
                             "stream": streamUrl,
