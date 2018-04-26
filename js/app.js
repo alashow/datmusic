@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.1.3
+ * Music v2.1.4
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -254,11 +254,12 @@ $(document).ready(function($) {
                     if (error.code == 14) {
                         showCaptcha(error.captcha_id, error.captcha_img, error.captcha_index); // api required captcha, showing it
                     };
+                    return;
                 }
 
                 if (response.data == 0) {
                     if (page == 0) {
-                        appendError(i18n.t("notFound")); //Response empty, audios not found
+                        appendError(i18n.t("notFound"));
                     } else {
                         $('#load-more').hide();
                     }
@@ -266,7 +267,7 @@ $(document).ready(function($) {
                 };
 
                 if (page == 0) {
-                    $('#result > .list-group').html(""); //clear list
+                    $('#result > .list-group').html("");
                 }
 
                 //appending audio items to dom
@@ -276,14 +277,11 @@ $(document).ready(function($) {
                     downloadUrl = audio.download;
                     streamUrl = audio.stream;
 
-                    audioTitle = audio.artist + ' - ' + audio.title;
-                    audioDuration = audio.duration.toTime();
-
                     audioView = {
                         "clickToPlay": i18n.t("clickToPlay"),
                         "clickToDownload": i18n.t("clickToDownload"),
                         "durationSeconds": audio.duration,
-                        "duration": audioDuration,
+                        "duration": audio.duration.toTime(),
                         "url": {
                             "stream": streamUrl,
                             "download": {
@@ -293,11 +291,10 @@ $(document).ready(function($) {
                                 "192": downloadUrl + "/192",
                             }
                         },
-                        "audio": audioTitle
+                        "title": audio.artist + ' - ' + audio.title
                     };
 
-                    audioRendered = Mustache.render(audioTemplate, audioView);
-                    $('#result > .list-group').append(audioRendered);
+                    $('#result > .list-group').append(Mustache.render(audioTemplate, audioView));
                 };
 
                 //tracking search query
