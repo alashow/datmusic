@@ -478,7 +478,7 @@ $(document).ready(function($) {
         $('#result > .list-group').html("");
         $('#result > .list-group').append('<li class="list-group-item list-group-item-danger">' + error + '</li>');
         $('#loading').hide();
-        $('#loading-more').hide();
+        $('#load-more').hide();
     }
 
     /**
