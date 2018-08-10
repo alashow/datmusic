@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.1.0
+ * Music v2.1.5
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -15,6 +15,7 @@ var locales = {
             "close": "Close",
             "error": "Error: __error__",
             "networkError": "Network error!",
+            "serverError": "Server returned an error. Please try again later.",
             "tokenError": "Access token error!",
             "notFound": "Not found!",
             "clickToPlay": "Play audio",
@@ -47,6 +48,7 @@ var locales = {
             "close": "إغلاق",
             "error": "خطأ: __error__",
             "networkError": "!خطأ فى الاتصال بالانترنت",
+            "serverError": "عاد الخادم خطأ. الرجاء معاودة المحاولة في وقت لاحق.",
             "tokenError": "!خطأ فى الوصول للرمز",
             "notFound": "!غير موجودة",
             "clickToPlay": "تشغيل الاوديو",
@@ -79,6 +81,7 @@ var locales = {
             "close": "Закрыть",
             "error": "Ошибка: __error__",
             "networkError": "Ошибка сети",
+            "serverError": "Сервер возвратил ошибку. Пожалуйста, повторите попытку позже.",
             "tokenError": "Ошибка в токене. Попробуйте заново.",
             "notFound": "Не найдено!",
             "clickToPlay": "Воспроизвести аудио",
@@ -111,6 +114,7 @@ var locales = {
             "close": "Ýap",
             "error": "Ýalňyşlyk: __error__",
             "networkError": "Internet ýok öýdýän..",
+            "serverError": "Serwerda ýalňyşlyk. Biraz wagtdan täzeden barlaň.",
             "tokenError": "Access token ýalňyş!",
             "notFound": "Beýle aýdym tapylmady",
             "clickToPlay": "Diňle",
@@ -143,6 +147,7 @@ var locales = {
             "close": "Schließen",
             "error": "Fehler: __error__",
             "networkError": "Netzwerkfehler!",
+            "serverError": "Der Server hat einen Fehler zurückgegeben. Bitte versuche es später erneut.",
             "tokenError": "Zugriffstoken-Fehler!",
             "notFound": "Nicht gefunden!",
             "clickToPlay": "Audiowiedergabe",
@@ -175,6 +180,7 @@ var locales = {
             "close": "Cerrar",
             "error": "Error: __error__",
             "networkError": "¡Error de red!",
+            "serverError": "El servidor devolvió un error. Por favor, inténtelo de nuevo más tarde.",
             "tokenError": "¡Error de licencia de acceso!",
             "notFound": "¡No encontrado!",
             "clickToPlay": "Reproducción de audio",
@@ -207,6 +213,7 @@ var locales = {
             "close": "Chiudi",
             "error": "Errore: __error__",
             "networkError": "Errore di rete!",
+            "serverError": "Il server ha restituito un errore. Per favore riprova più tardi.",
             "tokenError": "Accedi al token dell'errore!",
             "notFound": "Non trovato!",
             "clickToPlay": "Riproduci audio",
@@ -239,6 +246,7 @@ var locales = {
             "close": "Kapat",
             "error": "Hata: __error__",
             "networkError": "Ağ hatası!",
+            "serverError": "Sunucu bir hata verdi. Lütfen daha sonra tekrar deneyiniz.",
             "tokenError": "Erişim dizgeciği hatası!",
             "notFound": "Bulunamadı!",
             "clickToPlay": "Ses dosyasını çal",
@@ -270,9 +278,10 @@ var locales = {
             "apkDownloadTitle": "télécharger l'APK",
             "close": "Fermer",
             "error": "Erreur: __error__",
-            "networkError": "Erreur réseau !",
-            "tokenError": "Erreur token d'accès !",
-            "notFound": "Aucun résultat !",
+            "networkError": "Erreur réseau!",
+            "serverError": "Le serveur a renvoyé une erreur. Veuillez réessayer plus tard.",
+            "tokenError": "Erreur token d'accès!",
+            "notFound": "Aucun résultat!",
             "clickToPlay": "Jouer le titre",
             "clickToDownload": "Télécharger",
             "captcha": {
@@ -303,6 +312,7 @@ var locales = {
             "close": "Fechar",
             "error": "Erro: __error__",
             "networkError": "Erro na rede!",
+            "serverError": "O servidor retornou um erro. Por favor, tente novamente mais tarde.",
             "tokenError": "Erro no token de acesso!",
             "notFound": "Não encontrado!",
             "clickToPlay": "Tocar música",

@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.1.4
+ * Music v2.1.5
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -242,7 +242,11 @@ $(document).ready(function($) {
                 }
             },
             error: function(response) {
-                appendError(i18n.t("networkError"));
+                if(response.status != 0){
+                    appendError(i18n.t("serverError"));
+                } else {
+                    appendError(i18n.t("networkError"));
+                }
             },
             success: function(response) {
                 if (response.status == "error") {
