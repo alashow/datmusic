@@ -334,4 +334,36 @@ var locales = {
             "donate": "Doações são para manter o servidor e o serviço no ar"
         }
     },
+    el: {
+        translation: {
+            "title": "datmusic",
+            "searchPlaceholder": "Γράψτε όρους αναζήτησης",
+            "shortcuts": "\"→\" Επόμενο κομμάτι, \"←\" Προηγούμενο κομμάτι, \"Space\" Play/pause",
+            "loadMore": "Φόρτωση περισσοτέρων",
+            "apkDownload": "Θέλετε να κατεβάσετε την εφαρμογή για Android;",
+            "apkDownloadTitle": "Λήψη αρχείου APK",
+            "close": "Κλείσιμο",
+            "error": "Σφάλμα: __error__",
+            "networkError": "Σφάλμα δικτύου!",
+            "tokenError": "Σφάλμα Access token!",
+            "notFound": "Δέν βρέθηκε!",
+            "clickToPlay": "Αναπαραγωγή ήχου",
+            "clickToDownload": "Λήψη",
+            "captcha": {
+                "send": "Αποστολή",
+            },
+            "settings": {
+                "title": "Ρυθμίσεις",
+                "performerOnly": "Αναζήτηση μόνο για όνομα καλλιτέχνη",
+                "language": "Γλώσσα",
+                "sort": {
+                    "title": "Ταξινόμηση",
+                    "byDuration": "Ανά διάρκεια",
+                    "byPopularity": "Ανά δημοφιλία",
+                    "byDate": "Ανά ημ/μηνία καταχώρησης"
+                }
+            },
+            "donate": "Οι δωρεές συμβάλλουν στο να συνεχιστεί η λειτουργία του σέρβερ και της υπηρεσίας."
+        }
+    },
 };
