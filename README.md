@@ -1,11 +1,11 @@
-Music
+datmusic
 =====
 
 Search and Download free music from VK.
 
 ## Demo
 [datmusic](https://datmusic.xyz)
-![Demo Screenshot](https://i.imgur.com/LuT7F86.png)
+![datmusic screenshot](https://dotjpg.co/CTBg.png)
 
 [Usage wiki](https://github.com/alashow/music/wiki)
 
