@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.1.5
+ * Music v2.1.6
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -34,16 +34,17 @@ $(document).ready(function($) {
         captchaProxy: true, //in some countries(for ex. in China, or Turkmenistan) vk is fully blocked, captcha images won't show.      
         captchaProxyUrl: "https://dotjpg.co/timthumb/thumb.php?w=200&src=", //original captcha url will be appended
         bitratesEnabled: true,
+        /*for storing previous queries. Used to not search again with the same query*/
         oldQuery: null,
         page: 0,
-        /*for storing previous queries. Used to not search again with the same query*/
-        defaultLang: "en",
-        langCookie: "musicLang",
+        langCookie: "language",
         currentTrack: -1
     };
 
     i18n.init({
-        lng: (!$.cookie(config.langCookie)) ? config.defaultLang : $.cookie(config.langCookie),
+        whitelist: ["ar", "de", "en", "el", "es", "fr", "it", "pt", "ru", "tr", "tk"],
+        fallbackLng: "en",
+        nonExplicitWhitelist: true,
         resStore: locales,
         cookieName: config.langCookie,
     }, function(err, t) {
@@ -85,7 +86,6 @@ $(document).ready(function($) {
         $('#settingsModal').modal("show");
     });
 
-    //set selected settings, please.
     $('#languageSelect').val(i18n.lng());
 
     //change language live
@@ -242,7 +242,7 @@ $(document).ready(function($) {
                 }
             },
             error: function(response) {
-                if(response.status != 0){
+                if (response.status != 0) {
                     appendError(i18n.t("serverError"));
                 } else {
                     appendError(i18n.t("networkError"));
