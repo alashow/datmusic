@@ -34,7 +34,7 @@ var locales = {
                     "byDate": "By date added"
                 }
             },
-            "donate": "Donations are to keep server and service running"
+            "donate": "Donations are to keep the server and service running"
         }
     },
     ar: {
