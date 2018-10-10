@@ -1,5 +1,5 @@
 /* ========================================================================
- * Music v2.1.6
+ * Music v2.1.8
  * https://github.com/alashow/music
  * ======================================================================== */
 
@@ -38,7 +38,8 @@ $(document).ready(function($) {
         oldQuery: null,
         page: 0,
         langCookie: "language",
-        currentTrack: -1
+        currentTrack: -1,
+        audios: null
     };
 
     i18n.init({
@@ -160,7 +161,6 @@ $(document).ready(function($) {
 
     window.onpopstate = function(event) {
         searchFromQueryParam();
-        console.log(event);
     };
 
     if (location.hash.length > 2) {
@@ -271,9 +271,11 @@ $(document).ready(function($) {
                 };
 
                 if (page == 0) {
+                    config.audios = response.data;
                     $('#result > .list-group').html("");
                 }
 
+                config.audios.concat(response.data);
                 //appending audio items to dom
                 var count = response.data.length;
                 for (var i = 0; i < count; i++) {
@@ -475,6 +477,24 @@ $(document).ready(function($) {
         $(el).find('.glyphicon').addClass('glyphicon-pause');
 
         track('playAudio', $($('.list-group-item')[index]).find('a.name').html());
+
+        setupMediaSession(index);
+    }
+
+    function setupMediaSession(index) {
+        if ('mediaSession' in navigator) {
+            var audio = config.audios[index];
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: audio.title,
+                artist: audio.artist,
+                artwork: [{
+                    src: audio.cover
+                }]
+            });
+
+            navigator.mediaSession.setActionHandler('previoustrack', playPrev);
+            navigator.mediaSession.setActionHandler('nexttrack', playNext);
+        }
     }
 
     //Clear list and append given error
